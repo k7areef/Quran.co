@@ -3,12 +3,11 @@
  * @prop {String} [className]
  */
 
-import SearchForm from "@components/common/SearchForm";
-import { faSpinner } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useQuery } from "@tanstack/react-query";
 import React from "react";
+import SearchForm from "@components/common/SearchForm";
+import { useQuery } from "@tanstack/react-query";
 import { NavLink, useParams } from "react-router-dom";
+import { Virtuoso } from "react-virtuoso";
 
 // Highlighted Name Comp:
 const HighlightedName = ({ name, search }) => {
@@ -39,7 +38,7 @@ function Sidebar({ className }) {
     const { chapterId } = useParams();
 
     const [searchVal, setSearchVal] = React.useState("");
-    const chaptersContainerRef = React.useRef(null);
+    const virtuosoRef = React.useRef(null);
 
     const { data, isLoading } = useQuery({
         queryKey: ['CHAPTERS'],
@@ -61,13 +60,14 @@ function Sidebar({ className }) {
     }, [data]);
 
     React.useEffect(() => { // Scroll to active chapter
-        if (!isLoading && data?.chapters) {
-            const lastId = +(chapterId);
-            if (lastId) {
-                const activeElement = chaptersContainerRef.current?.querySelector(`[data-id="${lastId}"]`);
-                if (activeElement) {
-                    activeElement.scrollIntoView({ behavior: "smooth", block: "start" });
-                }
+        if (!isLoading && data?.chapters && chapterId) {
+            const index = data.chapters.findIndex(c => c.id === +(chapterId));
+            if (index !== -1) {
+                virtuosoRef.current?.scrollToIndex({
+                    index,
+                    align: 'start',
+                    behavior: 'smooth'
+                });
             }
         }
     }, [isLoading, data, chapterId]);
@@ -90,50 +90,54 @@ function Sidebar({ className }) {
     };
 
     return (
-        <aside
-            ref={chaptersContainerRef}
-            style={{ scrollPaddingTop: 80 }}
-            className={`chapters-sidebar w-80 shrink-0 bg-card border-2 border-border rounded-lg h-full overflow-y-auto max-md:hidden ${className}`}
-        >
-            <div className="side-header p-3 bg-inherit sticky top-0 z-10">
-                {/* Search */}
+        <aside className={`chapters-sidebar w-80 shrink-0 bg-card border-2 border-border rounded-lg h-full flex flex-col max-md:hidden ${className}`}>
+            {/* Search */}
+            <div className="side-header p-3 bg-inherit sticky top-0 z-10 shrink-0">
                 <SearchForm
                     id="chapters_search"
-                    name="chapters_search"
                     onChange={handleSearchVal}
                     placeholder="البحث في السور..."
                 />
             </div>
             {/* Chapters */}
-            <div className="chapters px-3 pb-3">
-                <ul className="chapters-list space-y-2">
-                    {isLoading ? (
-                        Array.from({ length: 114 }).map((_, index) => (<li
-                            key={index}
-                            title="جاري التحميل..."
-                            aria-label="جاري التحميل..."
-                            className="chapter-item bg-item border-2 border-border p-2 rounded-md flex items-center gap-2 animate-pulse"
-                        >
-                            <FontAwesomeIcon icon={faSpinner} className="animate-spin" />
-                            <span>جاري التحميل...</span>
-                        </li>))
-                    ) : (
-                        filteredChapters.map((chapter, index) => {
-                            return (<li key={chapter.id || index} data-id={chapter.id}>
+            <div className="chapters-container flex-1 min-h-0">
+                {isLoading ? (
+                    <div className="px-3 space-y-2">
+                        {/* Loading Skeletons */}
+                        {Array.from({ length: 15 }).map((_, i) => (
+                            <div key={i} className="chapter-item bg-item p-2 rounded-md animate-pulse h-12" />
+                        ))}
+                    </div>
+                ) : (
+                    <Virtuoso
+                        ref={virtuosoRef}
+                        style={{ height: '100%' }}
+                        data={filteredChapters}
+                        components={{
+                            List: React.forwardRef((props, ref) => (
+                                <div {...props} ref={ref} className="px-3 pb-3 space-y-2" />
+                            ))
+                        }}
+                        itemContent={(index, chapter) => (
+                            <div data-id={chapter.id} className="pb-2">
                                 <NavLink
                                     to={`/chapter/${chapter.id}`}
                                     onClick={() => handleSaveToLocalStorage(chapter.id)}
-                                    className={({ isActive }) => `chapter-item border-2 p-2 rounded-md flex items-center gap-2 transition-colors duration-200 ${isActive ? "bg-primary border-primary" : "bg-item border-border sm:hover:bg-primary/30 sm:hover:border-primary/30"}`}
+                                    className={({ isActive }) =>
+                                        `chapter-item border-2 p-2 rounded-md flex items-center gap-2 transition-colors duration-200 
+                                        ${isActive ? "bg-primary border-primary" : "bg-item border-border sm:hover:bg-primary/30"}`
+                                    }
                                 >
                                     <div className="chapter-number">{String(chapter.id).padStart(3, "0")}</div>
-                                    <h3 className="line-clamp-1 me-auto">{<HighlightedName name={chapter.name_arabic} search={searchVal} />}</h3>
+                                    <h3 className="line-clamp-1 me-auto">
+                                        <HighlightedName name={chapter.name_arabic} search={searchVal} />
+                                    </h3>
                                     <span className="text-sm text-muted font-medium">( {chapter.verses_count} آيه )</span>
                                 </NavLink>
-                            </li>)
-                        })
-                    )
-                    }
-                </ul>
+                            </div>
+                        )}
+                    />
+                )}
             </div>
         </aside>
     )
