@@ -6,6 +6,7 @@
 import React from "react";
 import { faBookOpen, faCheck, faCopy, faPlay } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useTafsir } from "@contexts/TafsirContext";
 
 /**
  * @param {VerseActionsProps} props
@@ -13,6 +14,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 function VerseActions({ verse }) {
 
     const [copied, setCopied] = React.useState(false);
+    const { openModal } = useTafsir();
 
     const handleCopy = React.useCallback(async () => { // Handle Copy
         if (copied) return;
@@ -23,6 +25,9 @@ function VerseActions({ verse }) {
             console.error("فشل النسخ: ", err);
         }
     }, [copied, verse]);
+    const handleTafsir = React.useCallback(() => { // Handle Tafsir
+        openModal(verse?.verse_key);
+    }, [verse, openModal]);
     const handlePlay = React.useCallback(() => { // Handle Play
         console.log(verse.text_imlaei);
     }, [verse]);
@@ -33,7 +38,7 @@ function VerseActions({ verse }) {
             {
                 name: "تفسير هذه الايه",
                 icon: faBookOpen,
-                onClick: () => { }
+                onClick: handleTafsir
             },
             {
                 name: copied ? "تم النسخ" : "نسخ هذه الايه",
@@ -46,7 +51,7 @@ function VerseActions({ verse }) {
                 onClick: handlePlay
             },
         ]
-    }, [handleCopy, handlePlay, copied]);
+    }, [handleCopy, handlePlay, copied, handleTafsir]);
 
     return (
         <div className="actions flex items-center gap-2" dir="ltr">

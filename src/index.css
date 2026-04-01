@@ -41,3 +41,9 @@ textarea:focus,
 button:focus {
   outline: none;
 }
+
+/* Tafsir Styles */
+.tafsir-text span {
+  color: var(--color-warning);
+  font-weight: 500;
+}

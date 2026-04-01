@@ -5,6 +5,9 @@
       "@components/*": [
         "components/*"
       ],
+      "@contexts/*": [
+        "contexts/*"
+      ],
     }
   }
 }

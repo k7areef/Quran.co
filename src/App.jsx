@@ -3,6 +3,7 @@ import Navbar from "@components/Navbar";
 import Sidebar from "@components/Sidebar";
 import VersesSection from "@components/Verses/VersesSection";
 import { Navigate, Route, Routes } from "react-router-dom";
+import TafsirModal from "@components/Modals/TafsirModal";
 
 function App() {
   return (
@@ -32,7 +33,9 @@ function App() {
             </div>
           </div>
         </div>} />
-      </Routes>main
+      </Routes>
+      {/* Tafsir Modal */}
+      <TafsirModal />
     </div>
   )
 }
