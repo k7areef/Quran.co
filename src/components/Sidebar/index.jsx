@@ -75,8 +75,8 @@ function Sidebar({ className }) {
             <div className="side-header p-3 bg-inherit sticky top-0 z-10">
                 {/* Search */}
                 <SearchForm
-                    id="chapter_search"
-                    name="chapter_search"
+                    id="chapters_search"
+                    name="chapters_search"
                     onChange={handleSearchVal}
                     placeholder="البحث في السور..."
                 />

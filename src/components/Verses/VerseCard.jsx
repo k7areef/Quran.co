@@ -13,7 +13,6 @@ import { useTafsirActions } from "@contexts/TafsirContext";
 const VerseCard = React.memo(({ verse }) => {
 
     const { openModal } = useTafsirActions();
-    console.log("Rerender VerseCard");
 
     return (
         <div className="verse-card bg-item rounded-lg p-3 space-y-5">

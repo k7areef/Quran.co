@@ -3,11 +3,12 @@
  * @prop {string} [className='']
  */
 
+import React from "react";
 import SearchForm from "@components/common/SearchForm";
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
 import VerseCard from "./VerseCard";
-import React from "react";
+import { Virtuoso } from 'react-virtuoso'
 
 /**
  * @param {VersesSectionProps} props
@@ -39,25 +40,28 @@ function VersesSection({ className }) {
         localStorage.setItem(`verses_chapter_${chapterId}`, JSON.stringify(data?.verses));
     }, [data, chapterId]);
 
+    const verses = data?.verses || [];
+
     return (
         <section className={`verses flex flex-col gap-5 h-full min-h-0 ${className}`} id="verses">
-            {/* Search */}
-            <SearchForm
-                id="verses_search"
-                name="verses_search"
-                className="shrink-0"
-                placeholder={`البحث في سورة ${"الفاتحة"}...`}
-            />
-            {/* Section Content */}
-            <div className="section-content bg-card border-2 border-border rounded-lg p-3 h-full min-h-0 overflow-y-auto">
-                {/* Verses */}
-                <div className="verses space-y-2">
-                    {isLoading ? (
-                        <>Loading...</>
-                    ) : (
-                        (data?.verses || []).map((verse, index) => (<VerseCard verse={verse} key={index} />))
-                    )}
-                </div>
+            <SearchForm className="shrink-0" placeholder={`البحث...`} id="verses_search" name="verses_search" />
+
+            {/* شيلنا الـ overflow-y-auto والـ padding من هنا */}
+            <div className="section-content bg-card border-2 border-border rounded-lg h-full min-h-0 relative">
+                {isLoading ? (
+                    <div className="p-3">Loading...</div>
+                ) : (
+                    <Virtuoso
+                        style={{ height: '100%' }}
+                        data={verses}
+                        itemContent={(index, verse) => (
+                            <div className="p-2">
+                                <VerseCard verse={verse} />
+                            </div>
+                        )}
+                        increaseViewportBy={200}
+                    />
+                )}
             </div>
         </section>
     )
