@@ -3,12 +3,18 @@
  * @prop {object} [verse={}]
  */
 
+import React from "react";
 import VerseActions from "./VerseActions";
+import { useTafsirActions } from "@contexts/TafsirContext";
 
 /**
  * @param {VerseCardProps} props
  */
-function VerseCard({ verse }) {
+const VerseCard = React.memo(({ verse }) => {
+
+    const { openModal } = useTafsirActions();
+    console.log("Rerender VerseCard");
+
     return (
         <div className="verse-card bg-item rounded-lg p-3 space-y-5">
             {/* Text */}
@@ -25,9 +31,9 @@ function VerseCard({ verse }) {
             {/* Separator */}
             <hr className="border-muted/20" />
             {/* Actions */}
-            <VerseActions verse={verse} />
+            <VerseActions verse={verse} openModal={openModal} />
         </div>
     )
-}
+});
 
 export default VerseCard;

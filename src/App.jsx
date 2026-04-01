@@ -4,6 +4,7 @@ import Sidebar from "@components/Sidebar";
 import VersesSection from "@components/Verses/VersesSection";
 import { Navigate, Route, Routes } from "react-router-dom";
 import TafsirModal from "@components/Modals/TafsirModal";
+import { TafsirContextProvider } from "@contexts/TafsirContext";
 
 function App() {
   return (
@@ -24,8 +25,13 @@ function App() {
                 <Sidebar />
                 {/* Main */}
                 <main className="flex-1 h-full flex flex-col gap-3 md:gap-5">
-                  {/* Verses */}
-                  <VersesSection />
+                  {/* Tafsir Context Provider */}
+                  <TafsirContextProvider>
+                    {/* Verses */}
+                    <VersesSection />
+                    {/* Tafsir Modal */}
+                    <TafsirModal />
+                  </TafsirContextProvider>
                   {/* Audio Palyer */}
                   <AudioPlayer />
                 </main>
@@ -34,8 +40,6 @@ function App() {
           </div>
         </div>} />
       </Routes>
-      {/* Tafsir Modal */}
-      <TafsirModal />
     </div>
   )
 }

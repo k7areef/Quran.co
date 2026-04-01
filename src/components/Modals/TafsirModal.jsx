@@ -1,4 +1,4 @@
-import { useTafsir } from "@contexts/TafsirContext";
+import { useTafsirActions, useTafsirData } from "@contexts/TafsirContext";
 import { faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { createPortal } from "react-dom";
@@ -6,7 +6,8 @@ import parse from 'html-react-parser';
 
 function TafsirModal() {
 
-    const { verseKey, isOpen, closeModal, data } = useTafsir();
+    const { data, isOpen, verseKey } = useTafsirData();
+    const { closeModal } = useTafsirActions();
 
     if (!isOpen) return;
 

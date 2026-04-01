@@ -1,20 +1,19 @@
 /**
  * @typedef {Object} VerseActionsProps
  * @prop {object} [verse={}]
+ * 
  */
 
 import React from "react";
 import { faBookOpen, faCheck, faCopy, faPlay } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useTafsir } from "@contexts/TafsirContext";
 
 /**
  * @param {VerseActionsProps} props
  */
-function VerseActions({ verse }) {
+function VerseActions({ verse, openModal }) {
 
     const [copied, setCopied] = React.useState(false);
-    const { openModal } = useTafsir();
 
     const handleCopy = React.useCallback(async () => { // Handle Copy
         if (copied) return;
@@ -25,9 +24,11 @@ function VerseActions({ verse }) {
             console.error("فشل النسخ: ", err);
         }
     }, [copied, verse]);
+
     const handleTafsir = React.useCallback(() => { // Handle Tafsir
         openModal(verse?.verse_key);
     }, [verse, openModal]);
+
     const handlePlay = React.useCallback(() => { // Handle Play
         console.log(verse.text_imlaei);
     }, [verse]);

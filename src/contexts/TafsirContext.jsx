@@ -1,12 +1,13 @@
-import React from "react";
+/* eslint-disable react-refresh/only-export-components */
+import React, { createContext, useContext, useState, useCallback, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 
-const TafsirContext = React.createContext();
+const TafsirDataContext = createContext();
+const TafsirActionsContext = createContext();
 
 export const TafsirContextProvider = ({ children }) => {
-
-    const [verseKey, setVerseKey] = React.useState(null);
-    const [isOpen, setIsOpen] = React.useState(false);
+    const [verseKey, setVerseKey] = useState(null);
+    const [isOpen, setIsOpen] = useState(false);
 
     const { data, isLoading } = useQuery({
         queryKey: [`TAFSIR_VERSE_${verseKey}`, verseKey],
@@ -18,32 +19,34 @@ export const TafsirContextProvider = ({ children }) => {
         refetchOnWindowFocus: false
     });
 
-    const openModal = React.useCallback((verseKey) => {
-        if (!verseKey) return;
+    const openModal = useCallback((key) => {
+        if (!key) return;
         setIsOpen(true);
-        setVerseKey(verseKey);
+        setVerseKey(key);
     }, []);
 
-    const closeModal = React.useCallback(() => {
+    const closeModal = useCallback(() => {
         setIsOpen(false);
         setVerseKey(null);
     }, []);
 
-    const value = {
+    const actions = useMemo(() => ({ openModal, closeModal }), [openModal, closeModal]);
+
+    const dataValue = useMemo(() => ({
         verseKey,
         isOpen,
-        openModal,
-        closeModal,
         data,
         isLoading
-    };
+    }), [verseKey, isOpen, data, isLoading]);
 
     return (
-        <TafsirContext.Provider value={value}>
-            {children}
-        </TafsirContext.Provider>
-    )
+        <TafsirDataContext.Provider value={dataValue}>
+            <TafsirActionsContext.Provider value={actions}>
+                {children}
+            </TafsirActionsContext.Provider>
+        </TafsirDataContext.Provider>
+    );
 };
 
-// eslint-disable-next-line react-refresh/only-export-components
-export const useTafsir = () => React.useContext(TafsirContext);
+export const useTafsirData = () => useContext(TafsirDataContext);
+export const useTafsirActions = () => useContext(TafsirActionsContext);
