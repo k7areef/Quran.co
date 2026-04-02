@@ -17,6 +17,23 @@ import { useQuery } from "@tanstack/react-query";
 function Navbar({ isLoading = true }) {
 
     const [isMobileMenuOpen, setIsMobileMenuOpen] = React.useState(false);
+    const menuRef = React.useRef(null);
+    const btnRef = React.useRef(null);
+
+    React.useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (menuRef.current &&
+                !menuRef.current.contains(event.target) &&
+                !btnRef.current.contains(event.target)) {
+                setIsMobileMenuOpen(false);
+            }
+        };
+
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, []);
 
     const {
         textType,
@@ -72,16 +89,35 @@ function Navbar({ isLoading = true }) {
                         <span>Quran.co</span>
                     </Link>
                     {/* Utils */}
-                    <div className="nav-utils flex items-center gap-3" dir="rtl">
-                        {/* Bras */}
+                    <div className="nav-utils flex items-center gap-1" dir="rtl">
+                        {/* Mobile Menu Toggle */}
                         <button
+                            ref={btnRef}
                             type="button"
-                            className="text-2xl lg:hidden"
+                            title="القائمة"
+                            aria-label="فتح القائمة"
                             onClick={() => setIsMobileMenuOpen(prev => !prev)}
+                            className={`text-xl w-10 h-10 rounded-full flex items-center justify-center transition-colors ${isMobileMenuOpen ? "bg-muted/30" : "sm:hover:bg-muted/30"} lg:hidden`}
                         >
                             <FontAwesomeIcon icon={isMobileMenuOpen ? faXmark : faBars} />
+                            <span className="sr-only">{isMobileMenuOpen ? 'إغلاق القائمة' : 'فتح القائمة'}</span>
                         </button>
-                        <div className={`select-wrapper grid transition-all ${isMobileMenuOpen ? "max-lg:grid-rows-[1fr] max-lg:p-3 max-lg:border-2" : "max-lg:grid-rows-[0fr]"} max-lg:absolute max-lg:top-full max-lg:left-0 max-lg:w-full max-lg:bg-card max-lg:border-border max-lg:mt-3 max-lg:rounded-lg max-lg:z-40`}>
+                        {/* Open Chapters Button */}
+                        <button
+                            type="button"
+                            title="السور"
+                            onClick={() => { }}
+                            aria-label="فتح السور"
+                            className="text-xl w-10 h-10 rounded-full flex items-center justify-center sm:hover:bg-muted/30 lg:hidden"
+                        >
+                            <FontAwesomeIcon icon={faBookOpen} />
+                            <span className="sr-only">فتح السور</span>
+                        </button>
+                        {/* Mobile Menu */}
+                        <div
+                            ref={menuRef}
+                            className={`select-wrapper grid transition-all ${isMobileMenuOpen ? "max-lg:grid-rows-[1fr] max-lg:p-3 max-lg:border-2" : "max-lg:grid-rows-[0fr]"} max-lg:absolute max-lg:top-full max-lg:left-0 max-lg:w-full max-lg:bg-card max-lg:border-border max-lg:mt-3 max-lg:rounded-lg max-lg:z-40`}
+                        >
                             <div className={`max-lg:overflow-hidden flex lg:items-center gap-3 max-lg:flex-col transition-opacity ${isMobileMenuOpen ? "max-lg:opacity-100" : "max-lg:opacity-0"}`}>
                                 {/* Text Type */}
                                 <Select
