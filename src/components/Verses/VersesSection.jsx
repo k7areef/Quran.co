@@ -1,62 +1,23 @@
 /**
  * @typedef {Object} VersesSectionProps
  * @prop {string} [className='']
+ * @prop {boolean} [isLoading=true]
+ * @prop {object} data
  */
 
 import React from "react";
 import SearchForm from "@components/common/SearchForm";
-import { useQuery } from "@tanstack/react-query";
-import { useParams } from "react-router-dom";
 import VerseCard from "./VerseCard";
-
-// Highlighted Name Comp:
-const HighlightedName = ({ name, search }) => {
-    if (!search) return <span>{name}</span>;
-
-    const regex = new RegExp(`(${search})`, 'gi');
-
-    const parts = name.split(regex);
-
-    return (
-        <>
-            {parts.map((part, index) =>
-                regex.test(part) ? (
-                    <span key={index} className="text-warning">{part}</span>
-                ) : (
-                    <span key={index}>{part}</span>
-                )
-            )}
-        </>
-    );
-};
 
 /**
  * @param {VersesSectionProps} props
  */
-function VersesSection({ className }) {
+function VersesSection({ className, isLoading, data }) {
 
-    const { chapterId } = useParams();
+    console.log(data);
+
+
     const [searchVal, setSearchVal] = React.useState("");
-
-    const { data, isLoading } = useQuery({
-        queryKey: [`VERSES_CHAPTERS_${chapterId}`, chapterId],
-        queryFn: async () => {
-            const params = {
-                fields: "text_indopak,text_imlaei_simple,text_imlaei,text_uthmani",
-                translations: 85
-            };
-            const res = await fetch(`https://api.quran.com/api/v4/verses/by_chapter/${chapterId}?fields=${params["fields"]}&translations=${params["translations"]}&per_page=1000`);
-            const data = await res.json();
-            localStorage.setItem(`verses_chapter_${chapterId}`, JSON.stringify(data?.verses));
-            return data;
-        },
-        initialData: () => {
-            const saved = localStorage.getItem(`verses_chapter_${chapterId}`);
-            return saved ? { verses: JSON.parse(saved) } : undefined;
-        },
-        enabled: !!chapterId,
-        refetchOnWindowFocus: false
-    });
 
     const filteredVerses = React.useMemo(() => { // Filter verses by search value
         const verses = data?.verses || [];

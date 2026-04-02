@@ -1,3 +1,8 @@
+/**
+ * @typedef {Object} NavbarProps
+ * @prop {boolean} [isLoading=true]
+ */
+
 import React from "react";
 import Select from "@components/UI/Select";
 import { useSettings } from "@contexts/SettingsContext";
@@ -5,7 +10,10 @@ import { faBookOpen } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Link } from "react-router-dom";
 
-function Navbar() {
+/**
+ * @param {NavbarProps} props
+ */
+function Navbar({ isLoading = true }) {
 
     const {
         textType,
@@ -39,16 +47,19 @@ function Navbar() {
                             current={textType}
                             setCurrent={setTextType}
                             options={textTypes}
+                            disabled={isLoading}
                         />
                         {/* Reciter */}
                         <Select
                             current={{ key: "abdurrahmaan_as_sudais", label: "عبد الباسط عبد الصمد" }}
                             options={[]}
+                            disabled={isLoading}
                         />
                         {/* Translator */}
                         <Select
                             current={{ key: "en-haleem", label: "M.A.S. Abdel Haleem" }}
                             options={[]}
+                            disabled={isLoading}
                         />
                     </div>
                 </div>

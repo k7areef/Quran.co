@@ -29,6 +29,7 @@ function Sidebar({ className }) {
             const saved = localStorage.getItem("chapters");
             return saved ? { chapters: JSON.parse(saved) } : undefined;
         },
+        staleTime: Infinity,
         refetchOnWindowFocus: false
     });
 

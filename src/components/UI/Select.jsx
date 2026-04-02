@@ -3,6 +3,7 @@
  * @property {object[]} options
  * @property {object} current
  * @property {Function} setCurrent
+ * @property {boolean} [disabled=false]
  * @property {string} [className=""]
  */
 
@@ -11,7 +12,7 @@ import React from "react";
 /**
  * @param {SelectProps} props
  */
-function Select({ current, setCurrent, options, className }) {
+function Select({ current, setCurrent, options, className, disabled }) {
 
     const [isOpen, setIsOpen] = React.useState(false);
     const ref = React.useRef(null);
@@ -39,8 +40,9 @@ function Select({ current, setCurrent, options, className }) {
         <div className={`select relative ${className}`} ref={ref}>
             <button
                 type="button"
+                disabled={disabled}
                 onClick={() => setIsOpen(prev => !prev)}
-                className="bg-item py-2 px-4 rounded-md border-2 border-muted/30"
+                className="bg-item py-2 px-4 rounded-md border-2 border-muted/30 disabled:opacity-60 transition-opacity"
             >
                 {current.label}
             </button>
