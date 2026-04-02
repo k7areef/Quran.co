@@ -6,7 +6,7 @@
 import React from "react";
 import Select from "@components/UI/Select";
 import { useSettings } from "@contexts/SettingsContext";
-import { faBookOpen, faFont, faLanguage, faMicrophone } from "@fortawesome/free-solid-svg-icons";
+import { faBars, faBookOpen, faFont, faLanguage, faMicrophone, faXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
@@ -15,6 +15,8 @@ import { useQuery } from "@tanstack/react-query";
  * @param {NavbarProps} props
  */
 function Navbar({ isLoading = true }) {
+
+    const [isMobileMenuOpen, setIsMobileMenuOpen] = React.useState(false);
 
     const {
         textType,
@@ -60,7 +62,7 @@ function Navbar({ isLoading = true }) {
     return (
         <nav className="navbar shrink-0" dir="ltr">
             <div className="container">
-                <div className="nav-content bg-card p-3 md:p-5 rounded-lg border-2 border-border flex items-center justify-between">
+                <div className="nav-content bg-card p-3 md:p-5 rounded-lg border-2 border-border flex items-center justify-between relative">
                     {/* App Logo */}
                     <Link
                         to={'/'}
@@ -71,30 +73,48 @@ function Navbar({ isLoading = true }) {
                     </Link>
                     {/* Utils */}
                     <div className="nav-utils flex items-center gap-3" dir="rtl">
-                        {/* Text Type */}
-                        <Select
-                            current={textType}
-                            setCurrent={setTextType}
-                            options={textTypes}
-                            disabled={isLoading}
-                            icon={<FontAwesomeIcon icon={faFont} />}
-                        />
-                        {/* Translator */}
-                        <Select
-                            current={translator}
-                            setCurrent={setTranslator}
-                            options={translations || []}
-                            disabled={isLoading}
-                            icon={<FontAwesomeIcon icon={faLanguage} />}
-                        />
-                        {/* Reciter */}
-                        <Select
-                            current={reciter}
-                            setCurrent={(value) => setReciter(value)}
-                            options={(reciterationsData?.recitations || []).map(r => ({ key: r.id, label: r.translated_name?.name }))}
-                            disabled={isLoading || isLoadingReciters}
-                            icon={<FontAwesomeIcon icon={faMicrophone} />}
-                        />
+                        {/* Bras */}
+                        <button
+                            type="button"
+                            className="text-2xl lg:hidden"
+                            onClick={() => setIsMobileMenuOpen(prev => !prev)}
+                        >
+                            <FontAwesomeIcon icon={isMobileMenuOpen ? faXmark : faBars} />
+                        </button>
+                        <div className={`select-wrapper grid transition-all ${isMobileMenuOpen ? "max-lg:grid-rows-[1fr] max-lg:p-3 max-lg:border-2" : "max-lg:grid-rows-[0fr]"} max-lg:absolute max-lg:top-full max-lg:left-0 max-lg:w-full max-lg:bg-card max-lg:border-border max-lg:mt-3 max-lg:rounded-lg max-lg:z-40`}>
+                            <div className={`max-lg:overflow-hidden flex lg:items-center gap-3 max-lg:flex-col transition-opacity ${isMobileMenuOpen ? "max-lg:opacity-100" : "max-lg:opacity-0"}`}>
+                                {/* Text Type */}
+                                <Select
+                                    className="w-full text-start"
+                                    current={textType}
+                                    setCurrent={setTextType}
+                                    options={textTypes}
+                                    disabled={isLoading}
+                                    icon={<FontAwesomeIcon icon={faFont} />}
+                                    optionsClassName="max-lg:relative max-lg:top-0 max-lg:left-0 max-lg:w-full max-lg:mt-3"
+                                />
+                                {/* Translator */}
+                                <Select
+                                    className="w-full text-start"
+                                    current={translator}
+                                    setCurrent={setTranslator}
+                                    options={translations || []}
+                                    disabled={isLoading}
+                                    icon={<FontAwesomeIcon icon={faLanguage} />}
+                                    optionsClassName="max-lg:relative max-lg:top-0 max-lg:left-0 max-lg:w-full max-lg:mt-3"
+                                />
+                                {/* Reciter */}
+                                <Select
+                                    className="w-full text-start"
+                                    current={reciter}
+                                    setCurrent={(value) => setReciter(value)}
+                                    options={(reciterationsData?.recitations || []).map(r => ({ key: r.id, label: r.translated_name?.name }))}
+                                    disabled={isLoading || isLoadingReciters}
+                                    icon={<FontAwesomeIcon icon={faMicrophone} />}
+                                    optionsClassName="max-lg:relative max-lg:top-0 max-lg:left-0 max-lg:w-full max-lg:mt-3"
+                                />
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

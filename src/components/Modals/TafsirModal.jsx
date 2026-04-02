@@ -15,7 +15,7 @@ function TafsirModal() {
         onClick={closeModal}
         className="fixed h-screen w-full top-0 left-0 z-50 bg-black/50 backdrop-blur-sm flex items-center"
     >
-        <div className="container h-3/4 flex items-center">
+        <div className="container h-full flex items-center">
             <div
                 onClick={e => e.stopPropagation()}
                 className="w-full bg-card text-white border-2 border-border rounded-lg p-3 md:p-5 flex flex-col gap-3 md:gap-5 max-h-3/4 min-h-0 relative"
