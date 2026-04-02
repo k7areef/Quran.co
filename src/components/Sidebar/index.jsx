@@ -6,29 +6,8 @@
 import React from "react";
 import SearchForm from "@components/common/SearchForm";
 import { useQuery } from "@tanstack/react-query";
-import { NavLink, useParams } from "react-router-dom";
-import { Virtuoso } from "react-virtuoso";
-
-// Highlighted Name Comp:
-const HighlightedName = ({ name, search }) => {
-    if (!search) return <span>{name}</span>;
-
-    const regex = new RegExp(`(${search})`, 'gi');
-
-    const parts = name.split(regex);
-
-    return (
-        <>
-            {parts.map((part, index) =>
-                regex.test(part) ? (
-                    <span key={index} className="text-warning">{part}</span>
-                ) : (
-                    <span key={index}>{part}</span>
-                )
-            )}
-        </>
-    );
-};
+import { useParams } from "react-router-dom";
+import ChapterItem from "./ChapterItem";
 
 /**
  * @param {SidebarProps} props
@@ -38,7 +17,7 @@ function Sidebar({ className }) {
     const { chapterId } = useParams();
 
     const [searchVal, setSearchVal] = React.useState("");
-    const virtuosoRef = React.useRef(null);
+    const chaptersRef = React.useRef(null);
 
     const { data, isLoading } = useQuery({
         queryKey: ['CHAPTERS'],
@@ -61,14 +40,7 @@ function Sidebar({ className }) {
 
     React.useEffect(() => { // Scroll to active chapter
         if (!isLoading && data?.chapters && chapterId) {
-            const index = data.chapters.findIndex(c => c.id === +(chapterId));
-            if (index !== -1) {
-                virtuosoRef.current?.scrollToIndex({
-                    index,
-                    align: 'start',
-                    behavior: 'smooth'
-                });
-            }
+            chaptersRef?.current?.querySelector(`[data-chapter-id="${chapterId}"]`)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
     }, [isLoading, data, chapterId]);
 
@@ -85,10 +57,6 @@ function Sidebar({ className }) {
         setSearchVal(e.target.value.trim());
     }, []);
 
-    const handleSaveToLocalStorage = (chapterId) => { // Save last chapter to localStorage
-        localStorage.setItem("last_chapter", chapterId);
-    };
-
     return (
         <aside className={`chapters-sidebar w-80 shrink-0 bg-card border-2 border-border rounded-lg h-full flex flex-col max-md:hidden ${className}`}>
             {/* Search */}
@@ -100,7 +68,7 @@ function Sidebar({ className }) {
                 />
             </div>
             {/* Chapters */}
-            <div className="chapters-container flex-1 min-h-0">
+            <div ref={chaptersRef} className="chapters-container flex-1 min-h-0 overflow-y-auto p-2 pt-0 space-y-2">
                 {isLoading ? (
                     <div className="px-3 space-y-2">
                         {/* Loading Skeletons */}
@@ -109,34 +77,9 @@ function Sidebar({ className }) {
                         ))}
                     </div>
                 ) : (
-                    <Virtuoso
-                        ref={virtuosoRef}
-                        style={{ height: '100%' }}
-                        data={filteredChapters}
-                        components={{
-                            List: React.forwardRef((props, ref) => (
-                                <div {...props} ref={ref} className="px-3 pb-3 space-y-2" />
-                            ))
-                        }}
-                        itemContent={(index, chapter) => (
-                            <div data-id={chapter.id} className="pb-2">
-                                <NavLink
-                                    to={`/chapter/${chapter.id}`}
-                                    onClick={() => handleSaveToLocalStorage(chapter.id)}
-                                    className={({ isActive }) =>
-                                        `chapter-item border-2 p-2 rounded-md flex items-center gap-2 transition-colors duration-200 
-                                        ${isActive ? "bg-primary border-primary" : "bg-item border-border sm:hover:bg-primary/30"}`
-                                    }
-                                >
-                                    <div className="chapter-number">{String(chapter.id).padStart(3, "0")}</div>
-                                    <h3 className="line-clamp-1 me-auto">
-                                        <HighlightedName name={chapter.name_arabic} search={searchVal} />
-                                    </h3>
-                                    <span className="text-sm text-muted font-medium">( {chapter.verses_count} آيه )</span>
-                                </NavLink>
-                            </div>
-                        )}
-                    />
+                    filteredChapters.map((chapter) => (
+                        <ChapterItem key={chapter.id} chapter={chapter} searchVal={searchVal} />
+                    ))
                 )}
             </div>
         </aside>
