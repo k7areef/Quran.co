@@ -1,6 +1,7 @@
 /**
  * @typedef {Object} SidebarProps
  * @prop {String} [className]
+ * @prop {Function} [onClick]
  */
 
 import React from "react";
@@ -12,7 +13,7 @@ import ChapterItem from "./ChapterItem";
 /**
  * @param {SidebarProps} props
  */
-function Sidebar({ className }) {
+function Sidebar({ className, onClick }) {
 
     const { chapterId } = useParams();
 
@@ -59,7 +60,7 @@ function Sidebar({ className }) {
     }, []);
 
     return (
-        <aside className={`chapters-sidebar w-80 shrink-0 bg-card border-2 border-border rounded-lg h-full flex flex-col max-md:hidden ${className}`}>
+        <aside onClick={onClick} className={`chapters-sidebar w-80 shrink-0 bg-card border-2 border-border rounded-lg h-full flex flex-col ${className}`}>
             {/* Search */}
             <div className="side-header p-3 bg-inherit sticky top-0 z-10 shrink-0">
                 <SearchForm

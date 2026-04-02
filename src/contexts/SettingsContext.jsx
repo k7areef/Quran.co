@@ -9,13 +9,17 @@ export const SettingsContextProvider = ({ children }) => {
     const [translator, setTranslator] = React.useState({ key: 85, label: "عبد الحليم" });
     const [reciter, setReciter] = React.useState({ key: 2, label: "عبد الباسط عبد الصمد" });
 
+    const [isChaptersSidebarOpen, setIsChaptersSidebarOpen] = React.useState(false);
+
     const value = {
         textType,
         setTextType,
         translator,
         setTranslator,
         reciter,
-        setReciter
+        setReciter,
+        isChaptersSidebarOpen,
+        setIsChaptersSidebarOpen
     };
 
     return (

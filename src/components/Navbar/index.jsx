@@ -18,13 +18,13 @@ function Navbar({ isLoading = true }) {
 
     const [isMobileMenuOpen, setIsMobileMenuOpen] = React.useState(false);
     const menuRef = React.useRef(null);
-    const btnRef = React.useRef(null);
+    const menuBtnRef = React.useRef(null);
 
     React.useEffect(() => {
         const handleClickOutside = (event) => {
             if (menuRef.current &&
                 !menuRef.current.contains(event.target) &&
-                !btnRef.current.contains(event.target)) {
+                !menuBtnRef.current.contains(event.target)) {
                 setIsMobileMenuOpen(false);
             }
         };
@@ -41,7 +41,9 @@ function Navbar({ isLoading = true }) {
         translator,
         setTranslator,
         reciter,
-        setReciter
+        setReciter,
+        isChaptersSidebarOpen,
+        setIsChaptersSidebarOpen
     } = useSettings();
 
     // Recitations
@@ -92,7 +94,7 @@ function Navbar({ isLoading = true }) {
                     <div className="nav-utils flex items-center gap-1" dir="rtl">
                         {/* Mobile Menu Toggle */}
                         <button
-                            ref={btnRef}
+                            ref={menuBtnRef}
                             type="button"
                             title="القائمة"
                             aria-label="فتح القائمة"
@@ -106,12 +108,12 @@ function Navbar({ isLoading = true }) {
                         <button
                             type="button"
                             title="السور"
-                            onClick={() => { }}
                             aria-label="فتح السور"
-                            className="text-xl w-10 h-10 rounded-full flex items-center justify-center sm:hover:bg-muted/30 lg:hidden"
+                            onClick={() => setIsChaptersSidebarOpen(prev => !prev)}
+                            className={`text-xl w-10 h-10 rounded-full flex items-center justify-center transition-colors ${isChaptersSidebarOpen ? "bg-muted/30" : "sm:hover:bg-muted/30"} lg:hidden`}
                         >
                             <FontAwesomeIcon icon={faBookOpen} />
-                            <span className="sr-only">فتح السور</span>
+                            <span className="sr-only">{isChaptersSidebarOpen ? 'إغلاق السور' : 'فتح السور'}</span>
                         </button>
                         {/* Mobile Menu */}
                         <div

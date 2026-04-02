@@ -1,4 +1,5 @@
 import AudioPlayer from "@components/AudioPlayer";
+import ChaptersSidebarModal from "@components/Modals/ChaptersSidebarModal";
 import TafsirModal from "@components/Modals/TafsirModal";
 import Navbar from "@components/Navbar";
 import Sidebar from "@components/Sidebar";
@@ -45,7 +46,7 @@ function AppContent() {
                     {/* Layout Content */}
                     <div className="layout-content h-full flex gap-3 md:gap-5">
                         {/* Sidebar */}
-                        <Sidebar />
+                        <Sidebar className="max-md:hidden" />
                         {/* Main */}
                         <main className="flex-1 h-full flex flex-col gap-3 md:gap-5">
                             {/* Tafsir Context Provider */}
@@ -61,6 +62,8 @@ function AppContent() {
                     </div>
                 </div>
             </div>
+            {/* Chapters Sidebar Modal */}
+            <ChaptersSidebarModal />
         </div>
     )
 }
