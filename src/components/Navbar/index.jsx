@@ -91,7 +91,7 @@ function Navbar({ isLoading = true }) {
                                     options={textTypes}
                                     disabled={isLoading}
                                     icon={<FontAwesomeIcon icon={faFont} />}
-                                    optionsClassName="max-lg:relative max-lg:top-0 max-lg:left-0 max-lg:w-full max-lg:mt-3"
+                                    optionsClassName="max-lg:relative max-lg:top-0 max-lg:left-0 max-lg:w-full max-lg:mt-0 max-lg:has-[.active]:mt-2"
                                 />
                                 {/* Translator */}
                                 <Select
@@ -101,7 +101,7 @@ function Navbar({ isLoading = true }) {
                                     options={translations || []}
                                     disabled={isLoading}
                                     icon={<FontAwesomeIcon icon={faLanguage} />}
-                                    optionsClassName="max-lg:relative max-lg:top-0 max-lg:left-0 max-lg:w-full max-lg:mt-3"
+                                    optionsClassName="max-lg:relative max-lg:top-0 max-lg:left-0 max-lg:w-full max-lg:mt-0 max-lg:has-[.active]:mt-2"
                                 />
                                 {/* Reciter */}
                                 <Select
@@ -111,7 +111,7 @@ function Navbar({ isLoading = true }) {
                                     options={(reciterationsData?.recitations || []).map(r => ({ key: r.id, label: r.translated_name?.name }))}
                                     disabled={isLoading || isLoadingReciters}
                                     icon={<FontAwesomeIcon icon={faMicrophone} />}
-                                    optionsClassName="max-lg:relative max-lg:top-0 max-lg:left-0 max-lg:w-full max-lg:mt-3"
+                                    optionsClassName="max-lg:relative max-lg:top-0 max-lg:left-0 max-lg:w-full max-lg:mt-0 max-lg:has-[.active]:mt-2"
                                 />
                             </div>
                         </div>

@@ -58,7 +58,7 @@ function Select({ current, setCurrent, options, className, disabled, icon, optio
                 <span className="label">{current.label}</span>
                 <FontAwesomeIcon icon={faAngleDown} className={`absolute z-10 left-3 top-1/2 -translate-y-1/2 transition-transform ${isOpen ? "rotate-180" : ""}`} />
             </button>
-            <div className={`select-options ${optionsClassName} absolute z-20 top-full right-0 w-max min-w-full text-nowrap mt-2 grid transition-all origin-top-right ${isOpen ? "grid-rows-[1fr]" : "grid-rows-[0fr]"}`}>
+            <div className={`select-options ${optionsClassName} absolute z-20 top-full right-0 w-max min-w-full text-nowrap mt-2 grid transition-all origin-top-right ${isOpen ? "active grid-rows-[1fr]" : "grid-rows-[0fr]"}`}>
                 <div className={`options bg-card border border-muted/30 rounded-md overflow-hidden transition-opacity delay-100 ${isOpen ? "opacity-100" : "opacity-0"}`}>
                     {
                         options.map((option, index) => (
