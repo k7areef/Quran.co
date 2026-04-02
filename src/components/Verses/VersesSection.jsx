@@ -14,9 +14,6 @@ import VerseCard from "./VerseCard";
  */
 function VersesSection({ className, isLoading, data }) {
 
-    console.log(data);
-
-
     const [searchVal, setSearchVal] = React.useState("");
 
     const filteredVerses = React.useMemo(() => { // Filter verses by search value

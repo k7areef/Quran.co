@@ -3,6 +3,7 @@ import TafsirModal from "@components/Modals/TafsirModal";
 import Navbar from "@components/Navbar";
 import Sidebar from "@components/Sidebar";
 import VersesSection from "@components/Verses/VersesSection";
+import { useSettings } from "@contexts/SettingsContext";
 import { TafsirContextProvider } from "@contexts/TafsirContext";
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
@@ -10,21 +11,22 @@ import { useParams } from "react-router-dom";
 function AppContent() {
 
     const { chapterId } = useParams();
+    const { translator: { key: translatorId } } = useSettings();
 
     const { data, isLoading } = useQuery({
-        queryKey: [`VERSES_CHAPTERS_${chapterId}`, chapterId],
+        queryKey: [`VERSES_CHAPTERS_${chapterId}_${translatorId}`, chapterId, translatorId],
         queryFn: async () => {
             const params = {
                 fields: "text_indopak,text_imlaei_simple,text_imlaei,text_uthmani",
-                translations: 85
+                translations: translatorId
             };
-            const res = await fetch(`https://api.quran.com/api/v4/verses/by_chapter/${chapterId}?fields=${params["fields"]}&translations=${params["translations"]}&per_page=1000`);
+            const res = await fetch(`https://api.quran.com/api/v4/verses/by_chapter/${chapterId}?fields=${params.fields}&translations=${params.translations}&per_page=1000`);
             const data = await res.json();
-            localStorage.setItem(`verses_chapter_${chapterId}`, JSON.stringify(data?.verses));
+            localStorage.setItem(`verses_chapter_${chapterId}_${translatorId}`, JSON.stringify(data?.verses));
             return data;
         },
         initialData: () => {
-            const saved = localStorage.getItem(`verses_chapter_${chapterId}`);
+            const saved = localStorage.getItem(`verses_chapter_${chapterId}_${translatorId}`);
             return saved ? { verses: JSON.parse(saved) } : undefined;
         },
         enabled: !!chapterId,

@@ -6,9 +6,10 @@
 import React from "react";
 import Select from "@components/UI/Select";
 import { useSettings } from "@contexts/SettingsContext";
-import { faBookOpen } from "@fortawesome/free-solid-svg-icons";
+import { faBookOpen, faFont, faLanguage, faMicrophone } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Link } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
 
 /**
  * @param {NavbarProps} props
@@ -17,8 +18,29 @@ function Navbar({ isLoading = true }) {
 
     const {
         textType,
-        setTextType
+        setTextType,
+        translator,
+        setTranslator,
+        reciter,
+        setReciter
     } = useSettings();
+
+    // Recitations
+    const { data: reciterationsData, isLoading: isLoadingReciters } = useQuery({
+        queryKey: ['RECITATIONS'],
+        queryFn: async () => {
+            const res = await fetch(`https://api.quran.com/api/v4/resources/recitations?language=ar`);
+            const data = await res.json();
+            localStorage.setItem('recitations', JSON.stringify(data));
+            return data;
+        },
+        initialData: () => {
+            const saved = localStorage.getItem('recitations');
+            return saved ? JSON.parse(saved) : undefined;
+        },
+        staleTime: Infinity,
+        refetchOnWindowFocus: false,
+    });
 
     // Text Types
     const textTypes = React.useMemo(() => ([
@@ -26,6 +48,13 @@ function Navbar({ isLoading = true }) {
         { key: "text_imlaei", label: "رسم إملائي (بالتشكيل)" },
         { key: "text_imlaei_simple", label: "رسم إملائي (بسيط)" },
         { key: "text_indopak", label: "خط هندوراسي (Indo-Pak)" },
+    ]), []);
+
+    // Translations
+    const translations = React.useMemo(() => ([
+        { key: 85, label: "عبد الحليم" },
+        { key: 84, label: "المفتي تقي عثماني" },
+        { key: 203, label: "الهلالي وخان" },
     ]), []);
 
     return (
@@ -48,18 +77,23 @@ function Navbar({ isLoading = true }) {
                             setCurrent={setTextType}
                             options={textTypes}
                             disabled={isLoading}
-                        />
-                        {/* Reciter */}
-                        <Select
-                            current={{ key: "abdurrahmaan_as_sudais", label: "عبد الباسط عبد الصمد" }}
-                            options={[]}
-                            disabled={isLoading}
+                            icon={<FontAwesomeIcon icon={faFont} />}
                         />
                         {/* Translator */}
                         <Select
-                            current={{ key: "en-haleem", label: "M.A.S. Abdel Haleem" }}
-                            options={[]}
+                            current={translator}
+                            setCurrent={setTranslator}
+                            options={translations || []}
                             disabled={isLoading}
+                            icon={<FontAwesomeIcon icon={faLanguage} />}
+                        />
+                        {/* Reciter */}
+                        <Select
+                            current={reciter}
+                            setCurrent={(value) => setReciter(value)}
+                            options={(reciterationsData?.recitations || []).map(r => ({ key: r.id, label: r.translated_name?.name }))}
+                            disabled={isLoading || isLoadingReciters}
+                            icon={<FontAwesomeIcon icon={faMicrophone} />}
                         />
                     </div>
                 </div>
