@@ -1,9 +1,11 @@
-import { TafsirContextProvider } from "./TafsirContext";
+import { SettingsContextProvider } from "./SettingsContext";
 
 function AppProviders({ children }) {
     return (
         <>
-            {children}
+            <SettingsContextProvider>
+                {children}
+            </SettingsContextProvider>
         </>
     )
 }

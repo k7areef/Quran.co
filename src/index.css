@@ -8,6 +8,9 @@
 }
 
 @theme {
+  /* Fonts */
+  --font-rubik: "Rubik", sans-serif;
+  --font-amiri: "Amiri", serif;
   /* Colors */
   --color-primary: #164837;
   --color-card: #1a1c1b;
@@ -27,7 +30,7 @@
 html,
 body {
   overflow: hidden;
-  font-family: "Rubik", sans-serif;
+  font-family: var(--font-rubik);
   font-optical-sizing: auto;
   font-style: normal;
 }

@@ -42,7 +42,7 @@ function VersesSection({ className }) {
         queryKey: [`VERSES_CHAPTERS_${chapterId}`, chapterId],
         queryFn: async () => {
             const params = {
-                fields: "text_imlaei,text_uthmani",
+                fields: "text_indopak,text_imlaei_simple,text_imlaei,text_uthmani",
                 translations: 85
             };
             const res = await fetch(`https://api.quran.com/api/v4/verses/by_chapter/${chapterId}?fields=${params["fields"]}&translations=${params["translations"]}&per_page=1000`);
