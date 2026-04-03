@@ -25,7 +25,9 @@ function VersesSection({ className }) {
                 translations: 85
             };
             const res = await fetch(`https://api.quran.com/api/v4/verses/by_chapter/${chapterId}?fields=${params["fields"]}&translations=${params["translations"]}&per_page=1000`);
-            return res.json();
+            const data = await res.json();
+            localStorage.setItem(`verses_chapter_${chapterId}`, JSON.stringify(data?.verses));
+            return data;
         },
         initialData: () => {
             const saved = localStorage.getItem(`verses_chapter_${chapterId}`);
@@ -34,11 +36,6 @@ function VersesSection({ className }) {
         enabled: !!chapterId,
         refetchOnWindowFocus: false
     });
-
-    React.useEffect(() => { // Handle Local Storage:
-        if (!data || !chapterId) return;
-        localStorage.setItem(`verses_chapter_${chapterId}`, JSON.stringify(data?.verses));
-    }, [data, chapterId]);
 
     const verses = data?.verses || [];
 
@@ -54,12 +51,13 @@ function VersesSection({ className }) {
                     <Virtuoso
                         style={{ height: '100%' }}
                         data={verses}
+                        overscan={400}
+                        computeItemKey={(index, verse) => verse.id}
                         itemContent={(index, verse) => (
-                            <div className="p-2">
+                            <div className="p-2" key={index}>
                                 <VerseCard verse={verse} />
                             </div>
                         )}
-                        increaseViewportBy={200}
                     />
                 )}
             </div>

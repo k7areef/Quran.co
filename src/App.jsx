@@ -12,7 +12,7 @@ function App() {
       {/* Routes */}
       <Routes>
         <Route index element={<Navigate to={`/chapter/1`} replace />} />
-        <Route path="/chapter/:chapterId" element={<div className="app-content h-screen bg-background text-white flex flex-col py-3 md:py-5 gap-3 md:gap-5">
+        <Route path="/chapter/:chapterId" element={<div className="app-content h-dvh bg-background text-white flex flex-col py-3 md:py-5 gap-3 md:gap-5">
           {/* Navbar */}
           <Navbar />
           {/* Layout */}
