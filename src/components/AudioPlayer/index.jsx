@@ -1,7 +1,7 @@
 /**
  * @typedef {Object} AudioPlayerProps
  * @prop {boolean} [versesIsLoading=false]
- * @prop {String} [className = '']
+ * @prop {String} [className='']
  */
 
 import React from "react";
@@ -11,13 +11,58 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useQuery } from "@tanstack/react-query";
 import { useNavigate, useParams } from "react-router-dom";
 import { formatTime } from "@utils/helpers.js";
+import TimeDisplay from "./components/TimeDisplay";
+
+const AudioMainContollers = React.memo(({ versesIsLoading, audioIsLoading, isPlaying, play, pause }) => {
+
+    const { chapterId } = useParams();
+    const navigate = useNavigate();
+
+    // Button Controller Styles
+    const btnStyle = `w-7.5 h-7.5 text-xs sm:text-sm md:text-base md:w-9 md:h-9 rounded-full flex items-center justify-center transition`;
+
+    return (
+        <>
+            {/* Next Button */}
+            <button
+                title="السورة التالية"
+                aria-label="السورة التالية"
+                onClick={() => navigate(`/chapter/${+chapterId + 1}`)}
+                disabled={versesIsLoading || audioIsLoading || +chapterId === 114}
+                className={`${btnStyle} bg-primary/50 not-disabled:sm:hover:bg-primary disabled:opacity-50 disabled:cursor-not-allowed!`}
+            >
+                <FontAwesomeIcon icon={faAngleRight} />
+                <span className="sr-only">Next</span>
+            </button>
+            {/* Play/Pause Button */}
+            <button
+                type="button"
+                disabled={audioIsLoading}
+                onClick={isPlaying ? pause : play}
+                className={`${btnStyle} ${isPlaying ? "bg-primary" : "bg-primary/50"}`}
+            >
+                <FontAwesomeIcon icon={(versesIsLoading || audioIsLoading) ? faSpinner : isPlaying ? faPause : faPlay} {...((versesIsLoading || audioIsLoading) ? { className: "animate-spin" } : {})} />
+                <span className="sr-only">{(versesIsLoading || audioIsLoading) ? "Loading..." : isPlaying ? "Pause" : "Play"}</span>
+            </button>
+            {/* Previous Button */}
+            <button
+                title="السورة السابقة"
+                aria-label="السورة السابقة"
+                onClick={() => navigate(`/chapter/${+chapterId - 1}`)}
+                disabled={versesIsLoading || audioIsLoading || +chapterId === 1}
+                className={`${btnStyle} bg-primary/50 not-disabled:sm:hover:bg-primary disabled:opacity-50 disabled:cursor-not-allowed!`}
+            >
+                <FontAwesomeIcon icon={faAngleLeft} />
+                <span className="sr-only">Previous</span>
+            </button>
+        </>
+    )
+});
 
 /**
  * @param {AudioPlayerProps} props
  */
 function AudioPlayer({ className, versesIsLoading }) {
-
-    const navigate = useNavigate();
 
     const { chapterId } = useParams();
     const { reciter: { key: reciterId }, currentTime, setCurrentTime } = useSettings();
@@ -104,9 +149,6 @@ function AudioPlayer({ className, versesIsLoading }) {
         }
     }, [setSliderValue]);
 
-    // Button Controller Styles
-    const btnStyle = `w-7.5 h-7.5 text-xs sm:text-sm md:text-base md:w-10 md:h-10 rounded-full flex items-center justify-center transition`;
-
     return (
         <div className={`audio-player bg-card border-2 border-border rounded-lg p-3 mt-auto flex items-center gap-3 flex-wrap ${className}`}>
             <audio
@@ -120,38 +162,14 @@ function AudioPlayer({ className, versesIsLoading }) {
             />
             {/* Controllers */}
             <div className="audio-controllers flex items-center gap-3">
-                {/* Next Button */}
-                <button
-                    title="السورة التالية"
-                    aria-label="السورة التالية"
-                    onClick={() => navigate(`/chapter/${+chapterId + 1}`)}
-                    disabled={versesIsLoading || audioIsLoading || +chapterId === 114}
-                    className={`${btnStyle} bg-primary/50 not-disabled:sm:hover:bg-primary disabled:opacity-50 disabled:cursor-not-allowed!`}
-                >
-                    <FontAwesomeIcon icon={faAngleRight} />
-                    <span className="sr-only">Next</span>
-                </button>
-                {/* Play/Pause Button */}
-                <button
-                    type="button"
-                    disabled={audioIsLoading}
-                    onClick={isPlaying ? pause : play}
-                    className={`${btnStyle} ${isPlaying ? "bg-primary" : "bg-primary/50"}`}
-                >
-                    <FontAwesomeIcon icon={(versesIsLoading || audioIsLoading) ? faSpinner : isPlaying ? faPause : faPlay} {...((versesIsLoading || audioIsLoading) ? { className: "animate-spin" } : {})} />
-                    <span className="sr-only">{(versesIsLoading || audioIsLoading) ? "Loading..." : isPlaying ? "Pause" : "Play"}</span>
-                </button>
-                {/* Previous Button */}
-                <button
-                    title="السورة السابقة"
-                    aria-label="السورة السابقة"
-                    onClick={() => navigate(`/chapter/${+chapterId - 1}`)}
-                    disabled={versesIsLoading || audioIsLoading || +chapterId === 1}
-                    className={`${btnStyle} bg-primary/50 not-disabled:sm:hover:bg-primary disabled:opacity-50 disabled:cursor-not-allowed!`}
-                >
-                    <FontAwesomeIcon icon={faAngleLeft} />
-                    <span className="sr-only">Previous</span>
-                </button>
+                {/* Audio Main Contollers */}
+                <AudioMainContollers
+                    versesIsLoading={versesIsLoading}
+                    audioIsLoading={audioIsLoading}
+                    isPlaying={isPlaying}
+                    play={play}
+                    pause={pause}
+                />
                 {/* Sound Volume */}
                 <div className="sound-volume flex items-center gap-2 max-sm:max-w-25">
                     {/* Range */}
@@ -205,12 +223,8 @@ function AudioPlayer({ className, versesIsLoading }) {
                     {formatTime(Math.floor(sliderValue))}
                 </div>
             </div>
-            {/* Current Time */}
-            <div className="current-time text-xs flex items-center gap-1 max-lg:md:ms-auto max-sm:ms-auto">
-                <span>{formatTime(duration)}</span>
-                <span>:</span>
-                <span>{formatTime(currentTime)}</span>
-            </div>
+            {/* Time Display */}
+            <TimeDisplay currentTime={currentTime} duration={duration} />
         </div>
     )
 }
