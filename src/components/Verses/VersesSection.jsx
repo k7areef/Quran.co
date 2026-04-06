@@ -9,6 +9,7 @@ import React from "react";
 import SearchForm from "@components/common/SearchForm";
 import VerseCard from "./VerseCard";
 import { useSettings } from "@contexts/SettingsContext";
+import { List, useDynamicRowHeight, useListRef } from "react-window";
 
 /**
  * @param {VersesSectionProps} props
@@ -28,6 +29,26 @@ function VersesSection({ className, isLoading, data }) {
         setSearchVal(e.target.value.trim());
     }, []);
 
+    const listRef = useListRef(null);
+
+    const rowHeight = useDynamicRowHeight({
+        defaultRowHeight: 50
+    });
+
+    const Row = ({ index, style }) => {
+        const verse = filteredVerses[index];
+        return (
+            <div style={style} className="pb-2 px-2">
+                <VerseCard
+                    verse={verse}
+                    key={verse.id}
+                    searchVal={searchVal}
+                    textType={textType}
+                />
+            </div>
+        );
+    };
+
     return (
         <section className={`verses flex flex-col gap-3 h-full min-h-0 ${className}`} id="verses">
             {/* Search Form */}
@@ -37,9 +58,13 @@ function VersesSection({ className, isLoading, data }) {
                 {isLoading ? (
                     <div className="p-3">Loading...</div>
                 ) : (
-                    filteredVerses.map((verse) => (
-                        <VerseCard verse={verse} key={verse.id} searchVal={searchVal} textType={textType} />
-                    ))
+                    <List
+                        listRef={listRef}
+                        rowComponent={Row}
+                        rowCount={filteredVerses.length}
+                        rowHeight={rowHeight}
+                        rowProps={{ filteredVerses }}
+                    />
                 )}
             </div>
         </section>
