@@ -10,7 +10,6 @@ import { faAngleLeft, faAngleRight, faPause, faPlay, faSpinner, faVolumeHigh } f
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useQuery } from "@tanstack/react-query";
 import { useNavigate, useParams } from "react-router-dom";
-import { formatTime } from "@utils/helpers.js";
 import TimeDisplay from "./components/TimeDisplay";
 
 const AudioMainContollers = React.memo(({ versesIsLoading, audioIsLoading, isPlaying, play, pause }) => {
@@ -191,8 +190,7 @@ function AudioPlayer({ className, versesIsLoading }) {
                 </div>
             </div>
             {/* Progress Bar */}
-            <div className="progress-bar lg:flex-1 max-md:sm:flex-1 relative group max-lg:md:w-full max-sm:w-full max-lg:md:-order-1 max-sm:-order-1 -mt-1.5">
-
+            <div className="progress-bar lg:flex-1 max-md:sm:flex-1 max-lg:md:w-full max-sm:w-full max-lg:md:-order-1 max-sm:-order-1 -mt-1.5">
                 {/* Range */}
                 <input
                     min={0}
@@ -212,16 +210,6 @@ function AudioPlayer({ className, versesIsLoading }) {
                         background: `linear-gradient(to left, var(--color-warning) ${(sliderValue / duration) * 100}%, var(--color-primary) ${(sliderValue / duration) * 100}%)`
                     }}
                 />
-
-                {/* Tiem Tootip */}
-                <div
-                    className={`opacity-0 group-hover:opacity-100 absolute top-0 -translate-y-full translate-x-1/2 bg-warning text-background font-medium text-xs px-2 py-1 rounded shadow-lg pointer-events-none transition-opacity`}
-                    style={{
-                        right: `${(sliderValue / duration) * 100}%`
-                    }}
-                >
-                    {formatTime(Math.floor(sliderValue))}
-                </div>
             </div>
             {/* Time Display */}
             <TimeDisplay currentTime={currentTime} duration={duration} />
