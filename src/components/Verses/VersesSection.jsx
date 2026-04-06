@@ -40,7 +40,7 @@ function VersesSection({ className, isLoading, data }) {
     const Row = React.useCallback(({ index, style }) => {
         const verse = filteredVerses[index];
         return (
-            <div style={style} className="pb-2 px-2">
+            <div style={style} className="pb-2 px-2 first-of-type:pt-2 last-of-type:pt-2">
                 <VerseCard
                     verse={verse}
                     key={verse.id}
@@ -56,7 +56,7 @@ function VersesSection({ className, isLoading, data }) {
             {/* Search Form */}
             <SearchForm onChange={handleSearchVal} className="shrink-0" placeholder={`البحث...`} id="verses_search" name="verses_search" />
             {/* Verses Container */}
-            <div className="section-content bg-card border-2 border-border rounded-lg h-full min-h-0 relative overflow-y-auto p-2 space-y-2">
+            <div className="section-content bg-card border-2 border-border rounded-lg h-full min-h-0 relative overflow-y-auto space-y-2">
                 {isLoading ? (
                     <div className="p-3">Loading...</div>
                 ) : (

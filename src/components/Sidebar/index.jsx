@@ -81,7 +81,7 @@ function Sidebar({ className, onClick }) {
     const Row = ({ index, style }) => {
         const chapter = filteredChapters[index];
         return (
-            <div style={style} className="pb-2 px-2">
+            <div style={style} className="pb-2 px-2 first-of-type:pt-2 last-of-type:pt-2">
                 <ChapterItem key={chapter.id} chapter={chapter} searchVal={searchVal} />
             </div>
         );
@@ -105,7 +105,7 @@ function Sidebar({ className, onClick }) {
                 />
             </div>
             {/* Chapters */}
-            <div className="chapters-container flex-1 min-h-0 overflow-y-auto md:py-2 space-y-2 md:bg-card md:border-2 md:border-border md:rounded-lg ">
+            <div className="chapters-container flex-1 min-h-0 overflow-y-auto space-y-2 md:bg-card md:border-2 md:border-border md:rounded-lg ">
                 {isLoading ? (
                     <List
                         rowComponent={RowSkeleton}
