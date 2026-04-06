@@ -22,7 +22,7 @@ function AudioPlayer({ className, versesIsLoading }) {
     const { chapterId } = useParams();
     const { reciter: { key: reciterId }, currentTime, setCurrentTime } = useSettings();
     const audioRef = React.useRef(null);
-    const [soundVolume, setSoundVolume] = React.useState(0.5);
+    const [soundVolume, setSoundVolume] = React.useState(Number(localStorage.getItem("lastSoundVolume")) || 0.5);
     const [sliderValue, setSliderValue] = React.useState(currentTime);
     const [isTimeDragging, setIsTimeDragging] = React.useState(false);
     const [isPlaying, setIsPlaying] = React.useState(false);
@@ -32,6 +32,7 @@ function AudioPlayer({ className, versesIsLoading }) {
     React.useEffect(() => {
         if (audioRef.current) {
             audioRef.current.volume = soundVolume;
+            localStorage.setItem("lastSoundVolume", soundVolume)
         }
     }, [soundVolume]);
 
