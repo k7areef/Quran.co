@@ -64,13 +64,15 @@ const AudioMainContollers = React.memo(({ versesIsLoading, audioIsLoading, isPla
 function AudioPlayer({ className, versesIsLoading }) {
 
     const { chapterId } = useParams();
-    const { reciter: { key: reciterId }, currentTime, setCurrentTime } = useSettings();
+    const { reciter: { key: reciterId }, setActiveVerse } = useSettings();
     const audioRef = React.useRef(null);
     const [soundVolume, setSoundVolume] = React.useState(Number(localStorage.getItem("lastSoundVolume")) || 0.5);
+    const [currentTime, setCurrentTime] = React.useState(0);
     const [sliderValue, setSliderValue] = React.useState(currentTime);
     const [isTimeDragging, setIsTimeDragging] = React.useState(false);
     const [isPlaying, setIsPlaying] = React.useState(false);
     const [duration, setDuration] = React.useState(0);
+    const [timestamps, setTimestamps] = React.useState([]);
 
     // Set audio sound volume
     React.useEffect(() => {
@@ -84,14 +86,17 @@ function AudioPlayer({ className, versesIsLoading }) {
     const { data, isLoading: audioIsLoading } = useQuery({
         queryKey: [`AUDIO_${reciterId}_${chapterId}`, reciterId, chapterId],
         queryFn: async () => {
-            const res = await fetch(`https://api.quran.com/api/v4/chapter_recitations/${reciterId}/${chapterId}`);
+            const res = await fetch(`https://api.quran.com/api/v4/chapter_recitations/${reciterId}/${chapterId}?segments=true`);
             const data = await res.json();
             localStorage.setItem(`audio_${reciterId}_${chapterId}`, JSON.stringify(data));
+            setTimestamps(data?.audio_file?.timestamps);
             return data;
         },
         initialData: () => {
             const saved = localStorage.getItem(`audio_${reciterId}_${chapterId}`);
-            return saved ? JSON.parse(saved) : undefined;
+            const data = JSON.parse(saved);
+            setTimestamps(data?.audio_file?.timestamps);
+            return saved ? data : undefined;
         },
         enabled: !!chapterId,
         staleTime: Infinity,
@@ -132,9 +137,16 @@ function AudioPlayer({ className, versesIsLoading }) {
         if (audioRef.current && !isTimeDragging) {
             setSliderValue(audioRef.current.currentTime);
             setCurrentTime(audioRef.current.currentTime);
+
+            if (Array.from(timestamps).length === 0) return;
+
+            // Find Active Verse
+            const currentTimeFormated = (currentTime * 1000);
+            const activeVerse = timestamps.find(t => ((currentTimeFormated >= t.timestamp_from) && (currentTimeFormated <= t.timestamp_to)));
+            if (activeVerse) setActiveVerse(activeVerse);
         }
-    }, [isTimeDragging, setCurrentTime]);
-    // Handle on loadedmetadata
+    }, [isTimeDragging, setCurrentTime, timestamps, setActiveVerse, currentTime]);
+    // Handle Loaded Metadata
     const handleOnLoadedMetaData = React.useCallback((e) => {
         setDuration(e.target.duration);
     }, []);

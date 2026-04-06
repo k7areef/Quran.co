@@ -1,10 +1,10 @@
-import { useSettings } from '@contexts/SettingsContext';
 import Sidebar from '@components/Sidebar';
 import { createPortal } from 'react-dom';
+import { useSidebarChapters } from '@contexts/SidebarChaptersContext';
 
 function ChaptersSidebarModal() {
 
-    const { isChaptersSidebarOpen, setIsChaptersSidebarOpen } = useSettings();
+    const { isChaptersSidebarOpen, setIsChaptersSidebarOpen } = useSidebarChapters();
 
     if (!isChaptersSidebarOpen) return;
 

@@ -3,6 +3,7 @@
  * @prop {object} [verse={}]
  * @prop {string} [searchVal='']
  * @prop {string} [textType='']
+ * @prop {boolean} [isActive=false]
  */
 
 import React from "react";
@@ -13,7 +14,7 @@ import HighlightedName from "@components/common/HighlightedName";
 /**
  * @param {VerseCardProps} props
  */
-const VerseCard = React.memo(({ verse, searchVal, textType }) => {
+const VerseCard = React.memo(({ verse, searchVal, textType, isActive }) => {
 
     const { openModal } = useTafsirActions();
 
@@ -21,7 +22,7 @@ const VerseCard = React.memo(({ verse, searchVal, textType }) => {
         <div className="verse-card bg-item rounded-lg p-3 space-y-5" style={{ contentVisibility: "auto" }}>
             {/* Text */}
             <div className="verse-text">
-                <p className="leading-loose font-amiri text-2xl">
+                <p className={`leading-loose font-amiri text-2xl transition-colors duration-300 ${isActive ? "text-warning" : "text-inherit"}`}>
                     <HighlightedName name={verse?.[textType?.key]} search={searchVal} />
                 </p>
             </div>

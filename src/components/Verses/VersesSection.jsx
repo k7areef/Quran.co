@@ -16,7 +16,7 @@ import { List, useDynamicRowHeight, useListRef } from "react-window";
  */
 function VersesSection({ className, isLoading, data }) {
 
-    const { textType } = useSettings();
+    const { textType, activeVerse } = useSettings();
     const [searchVal, setSearchVal] = React.useState("");
 
     // Filter verses by search value
@@ -46,10 +46,11 @@ function VersesSection({ className, isLoading, data }) {
                     key={verse.id}
                     searchVal={searchVal}
                     textType={textType}
+                    isActive={activeVerse?.verse_key === verse?.verse_key}
                 />
             </div>
         );
-    }, [filteredVerses, searchVal, textType]);
+    }, [filteredVerses, searchVal, textType, activeVerse]);
 
     return (
         <section className={`verses flex flex-col gap-3 h-full min-h-0 ${className}`} id="verses">

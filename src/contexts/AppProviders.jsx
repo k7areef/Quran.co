@@ -1,10 +1,13 @@
 import { SettingsContextProvider } from "./SettingsContext";
+import { SidebarChaptersContextProvider } from "./SidebarChaptersContext";
 
 function AppProviders({ children }) {
     return (
         <>
             <SettingsContextProvider>
-                {children}
+                <SidebarChaptersContextProvider>
+                    {children}
+                </SidebarChaptersContextProvider>
             </SettingsContextProvider>
         </>
     )

@@ -10,6 +10,7 @@ import { faBars, faBookOpen, faFont, faLanguage, faMicrophone, faXmark } from "@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
+import { useSidebarChapters } from "@contexts/SidebarChaptersContext";
 
 /**
  * @param {NavbarProps} props
@@ -42,9 +43,12 @@ function Navbar({ isLoading = true }) {
         setTranslator,
         reciter,
         setReciter,
+    } = useSettings();
+
+    const {
         isChaptersSidebarOpen,
         setIsChaptersSidebarOpen
-    } = useSettings();
+    } = useSidebarChapters();
 
     // Recitations
     const { data: reciterationsData, isLoading: isLoadingReciters } = useQuery({
