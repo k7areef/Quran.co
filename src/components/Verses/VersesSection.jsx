@@ -10,6 +10,7 @@ import SearchForm from "@components/common/SearchForm";
 import VerseCard from "./VerseCard";
 import { useSettings } from "@contexts/SettingsContext";
 import { List, useDynamicRowHeight, useListRef } from "react-window";
+import { useAudioPlayer } from "@contexts/AudioPlayerContext";
 
 /**
  * @param {VersesSectionProps} props
@@ -17,6 +18,7 @@ import { List, useDynamicRowHeight, useListRef } from "react-window";
 function VersesSection({ className, isLoading, data }) {
 
     const { textType } = useSettings();
+    const { activeVerse } = useAudioPlayer();
     const [searchVal, setSearchVal] = React.useState("");
 
     // Filter verses by search value
@@ -52,6 +54,21 @@ function VersesSection({ className, isLoading, data }) {
             </div>
         );
     }, [filteredVerses, listRef, searchVal, textType]);
+
+    const activeIndex = React.useMemo(() => {
+        if (!activeVerse) return -1;
+        return filteredVerses.findIndex(v => v.verse_key === activeVerse.verse_key);
+    }, [filteredVerses, activeVerse]);
+
+    React.useEffect(() => {
+        if (activeIndex !== -1 && listRef.current) {
+            listRef.current.scrollToRow({
+                index: activeIndex,
+                align: "start",
+                behavior: "smooth"
+            });
+        }
+    }, [activeIndex, listRef]);
 
     return (
         <section className={`verses flex flex-col gap-3 h-full min-h-0 ${className}`} id="verses">

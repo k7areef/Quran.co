@@ -14,21 +14,12 @@ import { useAudioPlayer } from "@contexts/AudioPlayerContext";
 /**
  * @param {VerseCardProps} props
  */
-const VerseCard = React.memo(({ verse, searchVal, textType, listRef, index }) => {
+const VerseCard = React.memo(({ verse, searchVal, textType }) => {
 
     const { openModal } = useTafsirActions();
     const { activeVerse } = useAudioPlayer();
 
     const isActive = (activeVerse?.verse_key === verse?.verse_key);
-
-    React.useEffect(() => {
-        if (!listRef?.current || !isActive) return;
-        listRef.current.scrollToRow({
-            align: "start",
-            behavior: "smooth",
-            index: index
-        })
-    }, [listRef, index, isActive]);
 
     return (
         <div className="verse-card bg-item rounded-lg p-3 space-y-5" style={{ contentVisibility: "auto" }}>
