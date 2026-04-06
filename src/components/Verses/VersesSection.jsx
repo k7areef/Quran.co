@@ -19,13 +19,15 @@ function VersesSection({ className, isLoading, data }) {
     const { textType } = useSettings();
     const [searchVal, setSearchVal] = React.useState("");
 
-    const filteredVerses = React.useMemo(() => { // Filter verses by search value
+    // Filter verses by search value
+    const filteredVerses = React.useMemo(() => {
         const verses = data?.verses || [];
         if (!searchVal) return verses;
         return verses.filter(v => v.text_imlaei.includes(searchVal));
     }, [data?.verses, searchVal]);
 
-    const handleSearchVal = React.useCallback((e) => { // Handle search input change
+    // Handle search input change
+    const handleSearchVal = React.useCallback((e) => {
         setSearchVal(e.target.value.trim());
     }, []);
 
@@ -35,7 +37,7 @@ function VersesSection({ className, isLoading, data }) {
         defaultRowHeight: 50
     });
 
-    const Row = ({ index, style }) => {
+    const Row = React.useCallback(({ index, style }) => {
         const verse = filteredVerses[index];
         return (
             <div style={style} className="pb-2 px-2">
@@ -47,7 +49,7 @@ function VersesSection({ className, isLoading, data }) {
                 />
             </div>
         );
-    };
+    }, [filteredVerses, searchVal, textType]);
 
     return (
         <section className={`verses flex flex-col gap-3 h-full min-h-0 ${className}`} id="verses">
@@ -61,9 +63,10 @@ function VersesSection({ className, isLoading, data }) {
                     <List
                         listRef={listRef}
                         rowComponent={Row}
-                        rowCount={filteredVerses.length}
                         rowHeight={rowHeight}
                         rowProps={{ filteredVerses }}
+                        rowCount={filteredVerses.length}
+                        key={data?.verses[0]?.id || "default"}
                     />
                 )}
             </div>
