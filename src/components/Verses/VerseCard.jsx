@@ -25,7 +25,7 @@ const VerseCard = React.memo(({ verse, searchVal, textType }) => {
         <div className="verse-card bg-item rounded-lg p-3 space-y-5" style={{ contentVisibility: "auto" }}>
             {/* Text */}
             <div className="verse-text">
-                <p className={`leading-loose font-amiri text-2xl transition-colors duration-500 ${isActive ? "text-warning" : "text-inherit"}`}>
+                <p className={`leading-loose font-amiri font-bold text-2xl transition-colors duration-500 ${isActive ? "text-warning" : "text-inherit"}`}>
                     <HighlightedName name={verse?.[textType?.key]} search={searchVal} />
                 </p>
             </div>
