@@ -7,6 +7,7 @@
 import React from "react";
 import { faBookOpen, faCheck, faCopy, faPlay } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useAudioPlayer } from "@contexts/AudioPlayerContext";
 
 /**
  * @param {VerseActionsProps} props
@@ -14,6 +15,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 function VerseActions({ verse, openModal }) {
 
     const [copied, setCopied] = React.useState(false);
+    const { timestamps, setCurrentTime } = useAudioPlayer();
 
     const handleCopy = React.useCallback(async () => { // Handle Copy
         if (copied) return;
@@ -30,8 +32,12 @@ function VerseActions({ verse, openModal }) {
     }, [verse, openModal]);
 
     const handlePlay = React.useCallback(() => { // Handle Play
-        console.log(verse.text_imlaei);
-    }, [verse]);
+        const time = timestamps.find(t => t.verse_key === verse.verse_key);
+        if (time) {
+            const formatedTime = (time?.timestamp_from / 1000)
+            setCurrentTime(formatedTime)
+        };
+    }, [timestamps, verse, setCurrentTime]);
 
     // Actions Data:
     const actions = React.useMemo(() => {

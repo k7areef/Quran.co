@@ -59,6 +59,13 @@ const AudioMainContollers = React.memo(({ versesIsLoading, audioIsLoading, isPla
     )
 });
 
+// Find Active Verse
+const findActiveVerse = (currentTime, timestamps) => {
+    const currentTimeFormated = (currentTime * 1000);
+    const activeVerse = timestamps.find(t => ((currentTimeFormated >= t.timestamp_from) && (currentTimeFormated <= t.timestamp_to)));
+    if (activeVerse) return activeVerse;
+};
+
 /**
  * @param {AudioPlayerProps} props
  */
@@ -66,7 +73,7 @@ function AudioPlayer({ className, versesIsLoading }) {
 
     const { chapterId } = useParams();
     const { reciter: { key: reciterId } } = useSettings();
-    const { currentTime, setCurrentTime, setActiveVerse } = useAudioPlayer();
+    const { currentTime, setCurrentTime, setActiveVerse, timestamps, setTimestamps } = useAudioPlayer();
 
     const audioRef = React.useRef(null);
     const [soundVolume, setSoundVolume] = React.useState(Number(localStorage.getItem("lastSoundVolume")) || 0.5);
@@ -74,7 +81,6 @@ function AudioPlayer({ className, versesIsLoading }) {
     const [isTimeDragging, setIsTimeDragging] = React.useState(false);
     const [isPlaying, setIsPlaying] = React.useState(false);
     const [duration, setDuration] = React.useState(0);
-    const [timestamps, setTimestamps] = React.useState([]);
 
     // Set audio sound volume
     React.useEffect(() => {
@@ -91,13 +97,11 @@ function AudioPlayer({ className, versesIsLoading }) {
             const res = await fetch(`https://api.quran.com/api/v4/chapter_recitations/${reciterId}/${chapterId}?segments=true`);
             const data = await res.json();
             localStorage.setItem(`audio_${reciterId}_${chapterId}`, JSON.stringify(data));
-            setTimestamps(data?.audio_file?.timestamps);
             return data;
         },
         initialData: () => {
             const saved = localStorage.getItem(`audio_${reciterId}_${chapterId}`);
             const data = JSON.parse(saved);
-            setTimestamps(data?.audio_file?.timestamps);
             return saved ? data : undefined;
         },
         enabled: !!chapterId,
@@ -105,12 +109,13 @@ function AudioPlayer({ className, versesIsLoading }) {
         refetchOnWindowFocus: false,
     });
 
-    // Set audio source when data is loaded
+    // Set audio source and timestamps when data is loaded
     React.useEffect(() => {
         if (audioRef.current && data?.audio_file?.audio_url) {
             audioRef.current.src = data.audio_file.audio_url;
+            setTimestamps(data?.audio_file?.timestamps);
         }
-    }, [data]);
+    }, [data, setTimestamps]);
 
     // Handlers:
     const play = React.useCallback(() => {
@@ -143,8 +148,7 @@ function AudioPlayer({ className, versesIsLoading }) {
             if (Array.from(timestamps).length === 0) return;
 
             // Find Active Verse
-            const currentTimeFormated = (currentTime * 1000);
-            const activeVerse = timestamps.find(t => ((currentTimeFormated >= t.timestamp_from) && (currentTimeFormated <= t.timestamp_to)));
+            const activeVerse = findActiveVerse(currentTime, timestamps);
             if (activeVerse) setActiveVerse(activeVerse);
         }
     }, [isTimeDragging, setCurrentTime, timestamps, setActiveVerse, currentTime]);

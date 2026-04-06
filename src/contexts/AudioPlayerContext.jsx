@@ -7,10 +7,12 @@ export const AudioPlayerContextProvider = ({ children }) => {
 
     const [currentTime, setCurrentTime] = React.useState(0);
     const [activeVerse, setActiveVerse] = React.useState(null);
+    const [timestamps, setTimestamps] = React.useState([]);
 
     const value = {
         currentTime, setCurrentTime,
-        activeVerse, setActiveVerse
+        activeVerse, setActiveVerse,
+        timestamps, setTimestamps
     };
 
     return (
