@@ -39,7 +39,7 @@ const VerseCard = React.memo(({ verse, searchVal, textType }) => {
             {/* Separator */}
             <hr className="border-muted/20" />
             {/* Actions */}
-            <VerseActions verse={verse} openModal={openModal} />
+            <VerseActions verse={verse} openModal={openModal} isActive={isActive} />
         </div>
     )
 });

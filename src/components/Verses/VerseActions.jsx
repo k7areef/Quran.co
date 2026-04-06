@@ -1,18 +1,20 @@
 /**
  * @typedef {Object} VerseActionsProps
  * @prop {object} [verse={}]
+ * @prop {Function} [openModal=() => {}]
+ * @prop {boolean} [isActive=false]
  * 
  */
 
 import React from "react";
-import { faBookOpen, faCheck, faCopy, faPlay } from "@fortawesome/free-solid-svg-icons";
+import { faBookOpen, faCheck, faCopy, faPause, faPlay } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useAudioPlayer } from "@contexts/AudioPlayerContext";
 
 /**
  * @param {VerseActionsProps} props
  */
-function VerseActions({ verse, openModal }) {
+function VerseActions({ verse, openModal, isActive }) {
 
     const [copied, setCopied] = React.useState(false);
     const { audioRef, timestamps } = useAudioPlayer();
@@ -32,9 +34,9 @@ function VerseActions({ verse, openModal }) {
     }, [verse, openModal]);
 
     const handlePlay = React.useCallback(() => { // Handle Play
-        const time = timestamps.find(t => t.verse_key === verse.verse_key);
-        if (time && audioRef?.current) {
-            const formatedTime = (time?.timestamp_from / 1000)
+        const verseTimeStamps = timestamps.find(t => t.verse_key === verse.verse_key);
+        if (verseTimeStamps && audioRef?.current) {
+            const formatedTime = (verseTimeStamps?.timestamp_from / 1000) + 0.1
             audioRef.current.currentTime = formatedTime;
         };
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -55,11 +57,11 @@ function VerseActions({ verse, openModal }) {
             },
             {
                 name: "تشغيل بدئً من هذه الايه",
-                icon: faPlay,
+                icon: isActive ? faPause : faPlay,
                 onClick: handlePlay
             },
         ]
-    }, [handleCopy, handlePlay, copied, handleTafsir]);
+    }, [handleTafsir, copied, handleCopy, isActive, handlePlay]);
 
     return (
         <div className="actions flex items-center gap-2" dir="ltr">
