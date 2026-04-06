@@ -10,6 +10,7 @@ export const SettingsContextProvider = ({ children }) => {
     const [reciter, setReciter] = React.useState({ key: 2, label: "عبد الباسط عبد الصمد" });
 
     const [isChaptersSidebarOpen, setIsChaptersSidebarOpen] = React.useState(false);
+    const [currentTime, setCurrentTime] = React.useState(0);
 
     const value = {
         textType,
@@ -19,7 +20,9 @@ export const SettingsContextProvider = ({ children }) => {
         reciter,
         setReciter,
         isChaptersSidebarOpen,
-        setIsChaptersSidebarOpen
+        setIsChaptersSidebarOpen,
+        currentTime,
+        setCurrentTime
     };
 
     return (

@@ -57,7 +57,7 @@ function AppContent() {
                                 <TafsirModal />
                             </TafsirContextProvider>
                             {/* Audio Palyer */}
-                            <AudioPlayer />
+                            <AudioPlayer versesIsLoading={isLoading} />
                         </main>
                     </div>
                 </div>
