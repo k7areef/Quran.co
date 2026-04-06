@@ -81,7 +81,7 @@ function Sidebar({ className, onClick }) {
     const Row = ({ index, style }) => {
         const chapter = filteredChapters[index];
         return (
-            <div style={style} className="pb-2 px-2 first-of-type:pt-2 last-of-type:pt-2">
+            <div style={style} className="pb-2 px-2">
                 <ChapterItem key={chapter.id} chapter={chapter} searchVal={searchVal} />
             </div>
         );
@@ -119,6 +119,7 @@ function Sidebar({ className, onClick }) {
                         rowComponent={Row}
                         rowCount={filteredChapters.length}
                         rowHeight={rowHeight}
+                        style={{ paddingTop: '8px', paddingBottom: '8px' }}
                         rowProps={{ filteredChapters }}
                     />
                 )}

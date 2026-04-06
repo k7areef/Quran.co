@@ -5,6 +5,7 @@
  */
 
 import HighlightedName from "@components/common/HighlightedName";
+import { useAudioPlayer } from "@contexts/AudioPlayerContext";
 import React from "react";
 import { NavLink } from "react-router-dom";
 
@@ -12,6 +13,8 @@ import { NavLink } from "react-router-dom";
  * @param {ChapterItemProps} props
  */
 const ChapterItem = React.memo(({ chapter, searchVal }) => {
+
+    const { setActiveVerse } = useAudioPlayer();
 
     const handleSaveToLocalStorage = React.useCallback((chapterId) => { // Save last chapter to localStorage
         localStorage.setItem("last_chapter", chapterId);
@@ -21,7 +24,10 @@ const ChapterItem = React.memo(({ chapter, searchVal }) => {
         <NavLink
             to={`/chapter/${chapter.id}`}
             data-chapter-id={chapter.id}
-            onClick={() => handleSaveToLocalStorage(chapter.id)}
+            onClick={() => {
+                setActiveVerse(null);
+                handleSaveToLocalStorage(chapter.id);
+            }}
             className={({ isActive }) =>
                 `chapter-item border-2 p-2 rounded-md flex items-center gap-2 transition-colors duration-200 
                                         ${isActive ? "bg-primary border-primary" : "bg-item border-border sm:hover:bg-primary/30"}`

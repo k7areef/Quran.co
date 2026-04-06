@@ -40,16 +40,18 @@ function VersesSection({ className, isLoading, data }) {
     const Row = React.useCallback(({ index, style }) => {
         const verse = filteredVerses[index];
         return (
-            <div style={style} className="pb-2 px-2 first-of-type:pt-2 last-of-type:pt-2">
+            <div style={style} className="pb-2 px-2">
                 <VerseCard
                     verse={verse}
                     key={verse.id}
                     searchVal={searchVal}
                     textType={textType}
+                    listRef={listRef}
+                    index={index}
                 />
             </div>
         );
-    }, [filteredVerses, searchVal, textType]);
+    }, [filteredVerses, listRef, searchVal, textType]);
 
     return (
         <section className={`verses flex flex-col gap-3 h-full min-h-0 ${className}`} id="verses">
@@ -66,6 +68,7 @@ function VersesSection({ className, isLoading, data }) {
                         rowHeight={rowHeight}
                         rowProps={{ filteredVerses }}
                         rowCount={filteredVerses.length}
+                        style={{ paddingTop: '8px', paddingBottom: '8px' }}
                         key={data?.verses[0]?.id || "default"}
                     />
                 )}
