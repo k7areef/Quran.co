@@ -161,8 +161,11 @@ function AudioPlayer({ className, versesIsLoading }) {
                         type="range"
                         value={soundVolume}
                         name="sound_progress"
-                        className="w-full"
                         onChange={(e) => setSoundVolume(e.target.value)}
+                        className="w-full"
+                        style={{
+                            background: `linear-gradient(to left, var(--color-warning) ${soundVolume * 100}%, var(--color-primary) ${soundVolume * 100}%)`
+                        }}
                     />
                     {/* Sound Icon */}
                     <FontAwesomeIcon icon={faVolumeHigh} />
@@ -184,9 +187,11 @@ function AudioPlayer({ className, versesIsLoading }) {
                     onChange={(e) => {
                         setIsTimeDragging(true);
                         setSliderValue(Number(e.target.value));
-
                     }}
                     className="w-full"
+                    style={{
+                        background: `linear-gradient(to left, var(--color-warning) ${(sliderValue / duration) * 100}%, var(--color-primary) ${(sliderValue / duration) * 100}%)`
+                    }}
                 />
 
                 {/* Tiem Tootip */}
