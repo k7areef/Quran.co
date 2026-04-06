@@ -6,7 +6,7 @@
 
 import React from "react";
 import { useSettings } from "@contexts/SettingsContext";
-import { faAngleLeft, faAngleRight, faPause, faPlay, faSpinner } from "@fortawesome/free-solid-svg-icons";
+import { faAngleLeft, faAngleRight, faPause, faPlay, faSpinner, faVolumeHigh } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useQuery } from "@tanstack/react-query";
 import { useNavigate, useParams } from "react-router-dom";
@@ -21,12 +21,19 @@ function AudioPlayer({ className, versesIsLoading }) {
 
     const { chapterId } = useParams();
     const { reciter: { key: reciterId }, currentTime, setCurrentTime } = useSettings();
-    const [sliderValue, setSliderValue] = React.useState(currentTime);
-    const [isDragging, setIsDragging] = React.useState(false);
-
     const audioRef = React.useRef(null);
+    const [soundVolume, setSoundVolume] = React.useState(0.5);
+    const [sliderValue, setSliderValue] = React.useState(currentTime);
+    const [isTimeDragging, setIsTimeDragging] = React.useState(false);
     const [isPlaying, setIsPlaying] = React.useState(false);
     const [duration, setDuration] = React.useState(0);
+
+    // Set audio sound volume
+    React.useEffect(() => {
+        if (audioRef.current) {
+            audioRef.current.volume = soundVolume;
+        }
+    }, [soundVolume]);
 
     // Fetch audio data
     const { data, isLoading: audioIsLoading } = useQuery({
@@ -77,18 +84,18 @@ function AudioPlayer({ className, versesIsLoading }) {
 
     // Handle time update
     const handleTimeUpdate = React.useCallback(() => {
-        if (audioRef.current && !isDragging) {
+        if (audioRef.current && !isTimeDragging) {
             setSliderValue(audioRef.current.currentTime);
             setCurrentTime(audioRef.current.currentTime);
         }
-    }, [isDragging, setCurrentTime]);
+    }, [isTimeDragging, setCurrentTime]);
     // Handle on loadedmetadata
     const handleOnLoadedMetaData = React.useCallback((e) => {
         setDuration(e.target.duration);
     }, []);
-    // Handle Progress Change
-    const handleProgressChange = React.useCallback((e) => {
-        setIsDragging(false);
+    // Handle Time Change
+    const handleTimeChange = React.useCallback((e) => {
+        setIsTimeDragging(false);
         const value = e.target.value;
         setSliderValue(value);
         if (audioRef.current) {
@@ -97,10 +104,10 @@ function AudioPlayer({ className, versesIsLoading }) {
     }, [setSliderValue]);
 
     // Button Controller Styles
-    const btnStyle = `w-10 h-10 rounded-full flex items-center justify-center transition`;
+    const btnStyle = `w-7.5 h-7.5 text-xs sm:text-sm md:text-base md:w-10 md:h-10 rounded-full flex items-center justify-center transition`;
 
     return (
-        <div className={`audio-player bg-card border-2 border-border rounded-lg p-3 mt-auto flex items-center gap-3 ${className}`}>
+        <div className={`audio-player bg-card border-2 border-border rounded-lg p-3 mt-auto flex items-center gap-3 flex-wrap ${className}`}>
             <audio
                 ref={audioRef}
                 className="hidden"
@@ -144,9 +151,25 @@ function AudioPlayer({ className, versesIsLoading }) {
                     <FontAwesomeIcon icon={faAngleLeft} />
                     <span className="sr-only">Previous</span>
                 </button>
+                {/* Sound Volume */}
+                <div className="sound-volume flex items-center gap-2 max-sm:max-w-25">
+                    {/* Range */}
+                    <input
+                        max={1}
+                        min={0.1}
+                        step={0.1}
+                        type="range"
+                        value={soundVolume}
+                        name="sound_progress"
+                        className="w-full"
+                        onChange={(e) => setSoundVolume(e.target.value)}
+                    />
+                    {/* Sound Icon */}
+                    <FontAwesomeIcon icon={faVolumeHigh} />
+                </div>
             </div>
             {/* Progress Bar */}
-            <div className="progress-bar flex-1 relative group">
+            <div className="progress-bar lg:flex-1 max-md:sm:flex-1 relative group max-lg:md:w-full max-sm:w-full max-lg:md:-order-1 max-sm:-order-1 -mt-1.5">
 
                 {/* Range */}
                 <input
@@ -156,10 +179,10 @@ function AudioPlayer({ className, versesIsLoading }) {
                     max={duration}
                     value={sliderValue}
                     name="audio_progress"
-                    onMouseUp={handleProgressChange}
-                    onTouchEnd={handleProgressChange}
+                    onMouseUp={handleTimeChange}
+                    onTouchEnd={handleTimeChange}
                     onChange={(e) => {
-                        setIsDragging(true);
+                        setIsTimeDragging(true);
                         setSliderValue(Number(e.target.value));
 
                     }}
@@ -177,7 +200,7 @@ function AudioPlayer({ className, versesIsLoading }) {
                 </div>
             </div>
             {/* Current Time */}
-            <div className="current-time text-xs flex items-center gap-1">
+            <div className="current-time text-xs flex items-center gap-1 max-lg:md:ms-auto max-sm:ms-auto">
                 <span>{formatTime(duration)}</span>
                 <span>:</span>
                 <span>{formatTime(currentTime)}</span>
