@@ -105,7 +105,7 @@ function Sidebar({ className, onClick }) {
                 />
             </div>
             {/* Chapters */}
-            <div className="chapters-container flex-1 min-h-0 overflow-y-auto p-2 space-y-2 md:bg-card md:border-2 md:border-border md:rounded-lg ">
+            <div className="chapters-container flex-1 min-h-0 overflow-y-auto md:py-2 space-y-2 md:bg-card md:border-2 md:border-border md:rounded-lg ">
                 {isLoading ? (
                     <List
                         rowComponent={RowSkeleton}
