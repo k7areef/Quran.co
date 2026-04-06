@@ -34,8 +34,13 @@ function TafsirModal() {
                 {/* Modal Header */}
                 <div className="modal-header flex items-center justify-between flex-wrap gap-3">
                     <h2 className="font-bold text-warning">تفسير الايه</h2>
-                    <p className="leading-loose">{data?.tafsir?.verses?.[verseKey].text_imlaei}</p>
+                    {/* Select Interpreter (Init) */}
+                    <div className="interpreter-select">
+                        Select Interpreter
+                    </div>
                 </div>
+                {/* Verse */}
+                <p className="leading-loose">{data?.tafsir?.verses?.[verseKey].text_imlaei}</p>
                 {/* Separator */}
                 <hr className="border-border" />
                 {/* Tafsir Text */}
