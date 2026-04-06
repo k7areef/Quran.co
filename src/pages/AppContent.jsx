@@ -36,7 +36,7 @@ function AppContent() {
     });
 
     return (
-        <div className="app-content h-dvh bg-background text-white flex flex-col py-3 md:py-5 gap-3 md:gap-5">
+        <div className="app-content h-dvh bg-background text-white flex flex-col py-3 md:py-5 gap-3">
             {/* Navbar */}
             <Navbar isLoading={isLoading} />
             {/* Layout */}
@@ -44,11 +44,11 @@ function AppContent() {
                 {/* Layout Container */}
                 <div className="container h-full">
                     {/* Layout Content */}
-                    <div className="layout-content h-full flex gap-3 md:gap-5">
+                    <div className="layout-content h-full flex gap-3">
                         {/* Sidebar */}
                         <Sidebar className="max-md:hidden" />
                         {/* Main */}
-                        <main className="flex-1 h-full flex flex-col gap-3 md:gap-5">
+                        <main className="flex-1 h-full flex flex-col gap-3">
                             {/* Tafsir Context Provider */}
                             <TafsirContextProvider>
                                 {/* Verses */}

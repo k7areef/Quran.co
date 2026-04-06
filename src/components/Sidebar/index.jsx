@@ -60,9 +60,9 @@ function Sidebar({ className, onClick }) {
     }, []);
 
     return (
-        <aside onClick={onClick} className={`chapters-sidebar w-80 shrink-0 bg-card border-2 border-border rounded-lg h-full flex flex-col ${className}`}>
+        <aside onClick={onClick} className={`chapters-sidebar w-80 shrink-0 h-full max-md:bg-card flex flex-col gap-3 ${className}`}>
             {/* Search */}
-            <div className="side-header p-3 bg-inherit sticky top-0 z-10 shrink-0">
+            <div className="side-header bg-inherit sticky top-0 z-10 shrink-0">
                 <SearchForm
                     id="chapters_search"
                     onChange={handleSearchVal}
@@ -70,14 +70,11 @@ function Sidebar({ className, onClick }) {
                 />
             </div>
             {/* Chapters */}
-            <div ref={chaptersRef} className="chapters-container flex-1 min-h-0 overflow-y-auto p-2 pt-0 space-y-2">
+            <div ref={chaptersRef} className="chapters-container flex-1 min-h-0 overflow-y-auto p-2 space-y-2 md:bg-card md:border-2 md:border-border md:rounded-lg ">
                 {isLoading ? (
-                    <div className="px-3 space-y-2">
-                        {/* Loading Skeletons */}
-                        {Array.from({ length: 15 }).map((_, i) => (
-                            <div key={i} className="chapter-item bg-item p-2 rounded-md animate-pulse h-12" />
-                        ))}
-                    </div>
+                    Array.from({ length: 15 }).map((_, i) => (
+                        <div key={i} className="chapter-item bg-item p-2 rounded-md animate-pulse h-12" />
+                    ))
                 ) : (
                     filteredChapters.map((chapter) => (
                         <ChapterItem key={chapter.id} chapter={chapter} searchVal={searchVal} />

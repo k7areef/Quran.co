@@ -110,7 +110,7 @@ function Navbar({ isLoading = true }) {
                             title="السور"
                             aria-label="فتح السور"
                             onClick={() => setIsChaptersSidebarOpen(prev => !prev)}
-                            className={`text-xl w-10 h-10 rounded-full flex items-center justify-center transition-colors ${isChaptersSidebarOpen ? "bg-muted/30" : "sm:hover:bg-muted/30"} lg:hidden`}
+                            className={`text-xl w-10 h-10 rounded-full flex items-center justify-center transition-colors ${isChaptersSidebarOpen ? "bg-muted/30" : "sm:hover:bg-muted/30"} md:hidden`}
                         >
                             <FontAwesomeIcon icon={faBookOpen} />
                             <span className="sr-only">{isChaptersSidebarOpen ? 'إغلاق السور' : 'فتح السور'}</span>

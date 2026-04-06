@@ -29,7 +29,7 @@ function VersesSection({ className, isLoading, data }) {
     }, []);
 
     return (
-        <section className={`verses flex flex-col gap-3 md:gap-5 h-full min-h-0 ${className}`} id="verses">
+        <section className={`verses flex flex-col gap-3 h-full min-h-0 ${className}`} id="verses">
             {/* Search Form */}
             <SearchForm onChange={handleSearchVal} className="shrink-0" placeholder={`البحث...`} id="verses_search" name="verses_search" />
             {/* Verses Container */}

@@ -168,13 +168,19 @@ function AudioPlayer({ className, versesIsLoading }) {
 
                 {/* Tiem Tootip */}
                 <div
-                    className={`${(!isPlaying && currentTime > 0) ? "" : "opacity-0 group-hover:opacity-100"} absolute top-0 -translate-y-full translate-x-1/2 bg-warning text-background font-medium text-xs px-2 py-1 rounded shadow-lg pointer-events-none transition-opacity`}
+                    className={`opacity-0 group-hover:opacity-100 absolute top-0 -translate-y-full translate-x-1/2 bg-warning text-background font-medium text-xs px-2 py-1 rounded shadow-lg pointer-events-none transition-opacity`}
                     style={{
                         right: `${(sliderValue / duration) * 100}%`
                     }}
                 >
                     {formatTime(Math.floor(sliderValue))}
                 </div>
+            </div>
+            {/* Current Time */}
+            <div className="current-time text-xs flex items-center gap-1">
+                <span>{formatTime(duration)}</span>
+                <span>:</span>
+                <span>{formatTime(currentTime)}</span>
             </div>
         </div>
     )
