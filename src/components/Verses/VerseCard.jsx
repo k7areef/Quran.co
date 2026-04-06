@@ -9,7 +9,7 @@ import React from "react";
 import VerseActions from "./VerseActions";
 import { useTafsirActions } from "@contexts/TafsirContext";
 import HighlightedName from "@components/common/HighlightedName";
-import { useSettings } from "@contexts/SettingsContext";
+import { useAudioPlayer } from "@contexts/AudioPlayerContext";
 
 /**
  * @param {VerseCardProps} props
@@ -17,7 +17,7 @@ import { useSettings } from "@contexts/SettingsContext";
 const VerseCard = React.memo(({ verse, searchVal, textType }) => {
 
     const { openModal } = useTafsirActions();
-    const { activeVerse } = useSettings();
+    const { activeVerse } = useAudioPlayer();
 
     const isActive = (activeVerse?.verse_key === verse?.verse_key);
 

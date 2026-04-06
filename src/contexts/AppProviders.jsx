@@ -1,3 +1,4 @@
+import { AudioPlayerContextProvider } from "./AudioPlayerContext";
 import { SettingsContextProvider } from "./SettingsContext";
 import { SidebarChaptersContextProvider } from "./SidebarChaptersContext";
 
@@ -6,7 +7,9 @@ function AppProviders({ children }) {
         <>
             <SettingsContextProvider>
                 <SidebarChaptersContextProvider>
-                    {children}
+                    <AudioPlayerContextProvider>
+                        {children}
+                    </AudioPlayerContextProvider>
                 </SidebarChaptersContextProvider>
             </SettingsContextProvider>
         </>

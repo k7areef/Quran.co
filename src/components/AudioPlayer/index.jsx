@@ -11,6 +11,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useQuery } from "@tanstack/react-query";
 import { useNavigate, useParams } from "react-router-dom";
 import TimeDisplay from "./components/TimeDisplay";
+import { useAudioPlayer } from "@contexts/AudioPlayerContext";
 
 const AudioMainContollers = React.memo(({ versesIsLoading, audioIsLoading, isPlaying, play, pause }) => {
 
@@ -64,10 +65,11 @@ const AudioMainContollers = React.memo(({ versesIsLoading, audioIsLoading, isPla
 function AudioPlayer({ className, versesIsLoading }) {
 
     const { chapterId } = useParams();
-    const { reciter: { key: reciterId }, setActiveVerse } = useSettings();
+    const { reciter: { key: reciterId } } = useSettings();
+    const { currentTime, setCurrentTime, setActiveVerse } = useAudioPlayer();
+
     const audioRef = React.useRef(null);
     const [soundVolume, setSoundVolume] = React.useState(Number(localStorage.getItem("lastSoundVolume")) || 0.5);
-    const [currentTime, setCurrentTime] = React.useState(0);
     const [sliderValue, setSliderValue] = React.useState(currentTime);
     const [isTimeDragging, setIsTimeDragging] = React.useState(false);
     const [isPlaying, setIsPlaying] = React.useState(false);
