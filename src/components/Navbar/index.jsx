@@ -118,7 +118,7 @@ function Navbar({ isLoading = true }) {
                         {/* Mobile Menu */}
                         <div
                             ref={menuRef}
-                            className={`select-wrapper grid transition-all ${isMobileMenuOpen ? "max-lg:grid-rows-[1fr] max-lg:p-3 max-lg:border-2" : "max-lg:grid-rows-[0fr]"} max-lg:absolute max-lg:top-full max-lg:left-0 max-lg:w-full max-lg:bg-card max-lg:border-border max-lg:mt-3 max-lg:rounded-lg max-lg:z-40`}
+                            className={`select-wrapper grid transition-all ${isMobileMenuOpen ? "max-lg:grid-rows-[1fr] max-lg:p-3 max-lg:border-2" : "max-lg:grid-rows-[0fr]"} max-lg:absolute max-lg:top-full max-lg:left-0 max-lg:w-full max-lg:bg-card max-lg:border-warning max-lg:mt-3 max-lg:rounded-lg max-lg:z-40`}
                         >
                             <div className={`max-lg:overflow-hidden flex lg:items-center gap-3 max-lg:flex-col transition-opacity ${isMobileMenuOpen ? "max-lg:opacity-100" : "max-lg:opacity-0"}`}>
                                 {/* Text Type */}
