@@ -9,6 +9,7 @@ import SearchForm from "@components/common/SearchForm";
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
 import ChapterItem from "./ChapterItem";
+import { List, useDynamicRowHeight, useListRef } from "react-window";
 
 /**
  * @param {SidebarProps} props
@@ -18,7 +19,7 @@ function Sidebar({ className, onClick }) {
     const { chapterId } = useParams();
 
     const [searchVal, setSearchVal] = React.useState("");
-    const chaptersRef = React.useRef(null);
+    const listRef = useListRef(null);
 
     const { data, isLoading } = useQuery({
         queryKey: ['CHAPTERS'],
@@ -34,17 +35,31 @@ function Sidebar({ className, onClick }) {
         refetchOnWindowFocus: false
     });
 
-    React.useEffect(() => { // Save chapters to localStorage
+    // Save chapters to localStorage
+    React.useEffect(() => {
         if (data?.chapters) {
             localStorage.setItem("chapters", JSON.stringify(data.chapters));
         }
     }, [data]);
 
-    React.useEffect(() => { // Scroll to active chapter
+    // Scroll to active chapter
+    React.useEffect(() => {
         if (!isLoading && data?.chapters && chapterId) {
-            chaptersRef?.current?.querySelector(`[data-chapter-id="${chapterId}"]`)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            const timer = setTimeout(() => {
+                const list = listRef.current;
+                if (list) {
+                    const targetIndex = +chapterId - 1;
+                    list.scrollToRow({
+                        behavior: "smooth",
+                        align: "start",
+                        index: targetIndex
+                    });
+                }
+            }, 100);
+
+            return () => clearTimeout(timer);
         }
-    }, [isLoading, data, chapterId]);
+    }, [chapterId, data?.chapters, isLoading, listRef]);
 
     const chapters = React.useMemo(() => { // Get chapters from data or localStorage
         return data?.chapters || [];
@@ -59,6 +74,26 @@ function Sidebar({ className, onClick }) {
         setSearchVal(e.target.value.trim());
     }, []);
 
+    const rowHeight = useDynamicRowHeight({
+        defaultRowHeight: 44
+    });
+
+    const Row = ({ index, style }) => {
+        const chapter = filteredChapters[index];
+        return (
+            <div style={style} className="pb-2 px-2">
+                <ChapterItem key={chapter.id} chapter={chapter} searchVal={searchVal} />
+            </div>
+        );
+    };
+    const RowSkeleton = ({ style }) => {
+        return (
+            <div style={style} className="pb-2 px-2">
+                <div className="chapter-item bg-item p-2 rounded-md animate-pulse h-12" />
+            </div>
+        );
+    };
+
     return (
         <aside onClick={onClick} className={`chapters-sidebar w-80 shrink-0 h-full max-md:bg-card flex flex-col gap-3 ${className}`}>
             {/* Search */}
@@ -70,15 +105,22 @@ function Sidebar({ className, onClick }) {
                 />
             </div>
             {/* Chapters */}
-            <div ref={chaptersRef} className="chapters-container flex-1 min-h-0 overflow-y-auto p-2 space-y-2 md:bg-card md:border-2 md:border-border md:rounded-lg ">
+            <div className="chapters-container flex-1 min-h-0 overflow-y-auto p-2 space-y-2 md:bg-card md:border-2 md:border-border md:rounded-lg ">
                 {isLoading ? (
-                    Array.from({ length: 15 }).map((_, i) => (
-                        <div key={i} className="chapter-item bg-item p-2 rounded-md animate-pulse h-12" />
-                    ))
+                    <List
+                        rowComponent={RowSkeleton}
+                        rowCount={114}
+                        rowHeight={44}
+                        rowProps={{}}
+                    />
                 ) : (
-                    filteredChapters.map((chapter) => (
-                        <ChapterItem key={chapter.id} chapter={chapter} searchVal={searchVal} />
-                    ))
+                    <List
+                        listRef={listRef}
+                        rowComponent={Row}
+                        rowCount={filteredChapters.length}
+                        rowHeight={rowHeight}
+                        rowProps={{ filteredChapters }}
+                    />
                 )}
             </div>
         </aside>
