@@ -15,7 +15,7 @@ import { useAudioPlayer } from "@contexts/AudioPlayerContext";
 function VerseActions({ verse, openModal }) {
 
     const [copied, setCopied] = React.useState(false);
-    const { timestamps, setCurrentTime } = useAudioPlayer();
+    const { audioRef, timestamps } = useAudioPlayer();
 
     const handleCopy = React.useCallback(async () => { // Handle Copy
         if (copied) return;
@@ -33,11 +33,12 @@ function VerseActions({ verse, openModal }) {
 
     const handlePlay = React.useCallback(() => { // Handle Play
         const time = timestamps.find(t => t.verse_key === verse.verse_key);
-        if (time) {
+        if (time && audioRef?.current) {
             const formatedTime = (time?.timestamp_from / 1000)
-            setCurrentTime(formatedTime)
+            audioRef.current.currentTime = formatedTime;
         };
-    }, [timestamps, verse, setCurrentTime]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [timestamps, verse]);
 
     // Actions Data:
     const actions = React.useMemo(() => {

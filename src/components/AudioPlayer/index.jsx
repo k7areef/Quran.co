@@ -73,9 +73,8 @@ function AudioPlayer({ className, versesIsLoading }) {
 
     const { chapterId } = useParams();
     const { reciter: { key: reciterId } } = useSettings();
-    const { currentTime, setCurrentTime, setActiveVerse, timestamps, setTimestamps } = useAudioPlayer();
+    const { audioRef, currentTime, setCurrentTime, setActiveVerse, timestamps, setTimestamps } = useAudioPlayer();
 
-    const audioRef = React.useRef(null);
     const [soundVolume, setSoundVolume] = React.useState(Number(localStorage.getItem("lastSoundVolume")) || 0.5);
     const [sliderValue, setSliderValue] = React.useState(currentTime);
     const [isTimeDragging, setIsTimeDragging] = React.useState(false);
@@ -88,7 +87,7 @@ function AudioPlayer({ className, versesIsLoading }) {
             audioRef.current.volume = soundVolume;
             localStorage.setItem("lastSoundVolume", soundVolume)
         }
-    }, [soundVolume]);
+    }, [audioRef, soundVolume]);
 
     // Fetch audio data
     const { data, isLoading: audioIsLoading } = useQuery({
@@ -115,24 +114,24 @@ function AudioPlayer({ className, versesIsLoading }) {
             audioRef.current.src = data.audio_file.audio_url;
             setTimestamps(data?.audio_file?.timestamps);
         }
-    }, [data, setTimestamps]);
+    }, [audioRef, data, setTimestamps]);
 
     // Handlers:
     const play = React.useCallback(() => {
         if (!audioRef.current) return;
         audioRef.current.play();
-    }, []);
+    }, [audioRef]);
     const pause = React.useCallback(() => {
         if (!audioRef.current) return;
         audioRef.current.pause();
-    }, []);
+    }, [audioRef]);
 
     // Play audio when data is loaded and not already playing
     React.useEffect(() => {
         if (audioRef.current && data?.audio_file?.audio_url && isPlaying) {
             play();
         }
-    }, [data, isPlaying, play]);
+    }, [audioRef, data, isPlaying, play]);
 
     // Audio Events Handlers:
     const onPlay = React.useCallback(() => setIsPlaying(true), []);
@@ -151,7 +150,7 @@ function AudioPlayer({ className, versesIsLoading }) {
             const activeVerse = findActiveVerse(currentTime, timestamps);
             if (activeVerse) setActiveVerse(activeVerse);
         }
-    }, [isTimeDragging, setCurrentTime, timestamps, setActiveVerse, currentTime]);
+    }, [audioRef, isTimeDragging, setCurrentTime, timestamps, currentTime, setActiveVerse]);
     // Handle Loaded Metadata
     const handleOnLoadedMetaData = React.useCallback((e) => {
         setDuration(e.target.duration);
@@ -164,7 +163,7 @@ function AudioPlayer({ className, versesIsLoading }) {
         if (audioRef.current) {
             audioRef.current.currentTime = value;
         }
-    }, [setSliderValue]);
+    }, [audioRef]);
 
     return (
         <div className={`audio-player bg-card border-2 border-border rounded-lg p-3 mt-auto flex items-center gap-3 flex-wrap ${className}`}>
