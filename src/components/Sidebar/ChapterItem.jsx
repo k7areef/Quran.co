@@ -6,6 +6,7 @@
 
 import HighlightedName from "@components/common/HighlightedName";
 import { useAudioPlayer } from "@contexts/AudioPlayerContext";
+import { useSidebarChapters } from "@contexts/SidebarChaptersContext";
 import React from "react";
 import { NavLink } from "react-router-dom";
 
@@ -15,6 +16,7 @@ import { NavLink } from "react-router-dom";
 const ChapterItem = React.memo(({ chapter, searchVal }) => {
 
     const { setActiveVerse } = useAudioPlayer();
+    const { setIsChaptersSidebarOpen } = useSidebarChapters();
 
     const handleSaveToLocalStorage = React.useCallback((chapterId) => { // Save last chapter to localStorage
         localStorage.setItem("last_chapter", chapterId);
@@ -26,6 +28,7 @@ const ChapterItem = React.memo(({ chapter, searchVal }) => {
             data-chapter-id={chapter.id}
             onClick={() => {
                 setActiveVerse(null);
+                setIsChaptersSidebarOpen(false);
                 handleSaveToLocalStorage(chapter.id);
             }}
             className={({ isActive }) =>
