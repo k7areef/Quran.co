@@ -15,7 +15,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 /**
  * @param {SearchFormProps} props
  */
-function SearchForm({ className, placeholder, onChange, ...props }) {
+const SearchForm = React.memo(({ className, placeholder, onChange, ...props }) => {
 
     const [searchValue, setSearchValue] = React.useState("");
 
@@ -68,6 +68,6 @@ function SearchForm({ className, placeholder, onChange, ...props }) {
             </label>
         </form>
     )
-}
+});
 
 export default SearchForm;

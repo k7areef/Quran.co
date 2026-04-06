@@ -8,12 +8,14 @@
 import React from "react";
 import SearchForm from "@components/common/SearchForm";
 import VerseCard from "./VerseCard";
+import { useSettings } from "@contexts/SettingsContext";
 
 /**
  * @param {VersesSectionProps} props
  */
 function VersesSection({ className, isLoading, data }) {
 
+    const { textType } = useSettings();
     const [searchVal, setSearchVal] = React.useState("");
 
     const filteredVerses = React.useMemo(() => { // Filter verses by search value
@@ -36,7 +38,7 @@ function VersesSection({ className, isLoading, data }) {
                     <div className="p-3">Loading...</div>
                 ) : (
                     filteredVerses.map((verse) => (
-                        <VerseCard verse={verse} key={verse.id} searchVal={searchVal} />
+                        <VerseCard verse={verse} key={verse.id} searchVal={searchVal} textType={textType} />
                     ))
                 )}
             </div>
