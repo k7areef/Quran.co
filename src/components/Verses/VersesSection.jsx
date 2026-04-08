@@ -85,7 +85,7 @@ function VersesSection({ className, isLoading, data }) {
                         rowHeight={rowHeight}
                         rowProps={{ filteredVerses }}
                         rowCount={filteredVerses.length}
-                        style={{ paddingTop: '8px', paddingBottom: '8px' }}
+                        style={{ paddingTop: '8px' }}
                         key={data?.verses[0]?.id || "default"}
                     />
                 )}

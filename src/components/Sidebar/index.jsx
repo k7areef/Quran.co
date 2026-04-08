@@ -119,7 +119,7 @@ function Sidebar({ className, onClick }) {
                         rowComponent={Row}
                         rowCount={filteredChapters.length}
                         rowHeight={rowHeight}
-                        style={{ paddingTop: '8px', paddingBottom: '8px' }}
+                        style={{ paddingTop: '8px' }}
                         rowProps={{ filteredChapters }}
                     />
                 )}
