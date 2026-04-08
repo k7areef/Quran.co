@@ -187,7 +187,7 @@ function AudioPlayer({ className, versesIsLoading }) {
                     pause={pause}
                 />
                 {/* Sound Volume */}
-                <div className="sound-volume flex items-center gap-2 max-sm:max-w-25">
+                <div className="sound-volume flex items-center gap-2 max-sm:max-w-20">
                     {/* Range */}
                     <input
                         max={1}
